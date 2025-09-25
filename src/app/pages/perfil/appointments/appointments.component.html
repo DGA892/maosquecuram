@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>Meus Agendamentos - Clínica de Massoterapia</title>
+
+    <!-- Bootstrap & CSS -->
+    <link href="../../../../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../../../../assets/css/main.css" rel="stylesheet">
+    <style>
+        /* Modal custom */
+        .modal-custom {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-custom .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 400px;
+        }
+
+        .modal-custom .close {
+            float: right;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .modal-content .w-45 {
+            width: 48%;
+            /* Para dar um pequeno espaço entre os botões */
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header id="header" class="header d-flex align-items-center">
+        <div class="container d-flex align-items-center justify-content-between">
+            <a href="index.html" class="logo d-flex align-items-center me-auto me-lg-0">
+                <img src="/src/main/resources/static/img/logo.png" alt="Mãos que Curam">
+                <h1 class="sitename"><span>Mãos que Curam</span></h1>
+            </a>
+            <nav id="navbar" class="navbar">
+                <ul>
+                    <li><a href="../index.html">Início</a></li>
+                    <li><a href="../users/profile.html">Perfil</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main -->
+    <main id="main">
+        <section id="appointments" class="section">
+            <div class="container" data-aos="fade-up">
+
+                <div class="section-header">
+                    <h2>Meus Agendamentos</h2>
+                    <p>Gerencie suas sessões já marcadas</p>
+                </div>
+
+                <div class="row justify-content-center">
+                    <div class="col-lg-10">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover align-middle text-center">
+                                <thead class="table-primary">
+                                    <tr>
+                                        <th>Data</th>
+                                        <th>Horário</th>
+                                        <th>Serviço</th>
+                                        <th>Profissional</th>
+                                        <th>Cliente</th>
+                                        <th>Status</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="appointments-body">
+                                    <!-- Linhas geradas via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal Remarcar -->
+    <div id="editModal" class="modal-custom">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h5>Remarcar Agendamento</h5>
+            <label for="new-date">Nova Data:</label>
+            <input type="date" id="new-date" class="form-control mb-2">
+            <label for="new-time">Novo Horário:</label>
+            <input type="time" id="new-time" class="form-control mb-3">
+            <div id="modal-warning" class="text-danger mb-2" style="display:none;">Só é possível remarcar com mais de
+                24h de antecedência.</div>
+            <button id="save-btn" class="btn btn-primary w-100">Salvar Alterações</button>
+        </div>
+    </div>
+
+    <!-- Modal Cancelar -->
+    <!-- Modal Cancelar -->
+    <div id="cancelModal" class="modal-custom">
+        <div class="modal-content">
+            <span class="close" id="close-cancel">&times;</span>
+            <h5>Cancelar Agendamento</h5>
+            <p>Tem certeza que deseja cancelar este agendamento?</p>
+            <div class="d-flex justify-content-between">
+                <button class="btn btn-danger w-45" id="cancel-yes">Sim, Cancelar</button>
+                <button class="btn btn-secondary w-45" id="cancel-no">Não</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Footer -->
+    <footer id="footer" class="footer mt-4">
+        <div class="container">
+            <div class="copyright">
+                &copy; 2025 <strong><span>Clínica de Massoterapia</span></strong>. Todos os direitos reservados.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../../../../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../../../../assets/js/main.js"></script>
+    <script>
+        const appointments = [
+            { data: '2025-09-05', hora: '14:00', servico: 'Massagem Relaxante', profissional: 'Ana Paula', cliente: 'Rodrigo', status: 'Confirmado' },
+            { data: '2025-09-12', hora: '16:30', servico: 'Drenagem Linfática', profissional: 'Marcos Silva', cliente: 'Luzia', status: 'Pendente' },
+            { data: '2025-09-20', hora: '10:00', servico: 'Reflexologia', profissional: 'Carla Souza', cliente: 'Joedson', status: 'Concluído' }
+        ];
+
+        let currentIndex = null;
+
+        function renderAppointments() {
+            const tbody = document.getElementById('appointments-body');
+            tbody.innerHTML = '';
+            appointments.forEach((a, i) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+          <td>${new Date(a.data).toLocaleDateString('pt-BR')}</td>
+          <td>${a.hora}</td>
+          <td>${a.servico}</td>
+          <td>${a.profissional}</td>
+          <td>${a.cliente}</td>
+          <td>${statusBadge(a.status)}</td>
+          <td>${actionButtons(a.status, i)}</td>
+        `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function statusBadge(status) {
+            switch (status) {
+                case 'Confirmado': return '<span class="badge bg-success">Confirmado</span>';
+                case 'Pendente': return '<span class="badge bg-warning text-dark">Pendente</span>';
+                case 'Concluído': return '<span class="badge bg-secondary">Concluído</span>';
+                default: return status;
+            }
+        }
+
+        function actionButtons(status, index) {
+            if (status === 'Concluído') {
+                return '<button class="btn btn-secondary btn-sm" disabled>Indisponível</button>';
+            }
+
+            const appointmentDateTime = new Date(`${appointments[index].data}T${appointments[index].hora}`);
+            const now = new Date();
+            const hoursDiff = (appointmentDateTime - now) / (1000 * 60 * 60);
+
+            if (hoursDiff < 24) {
+                return `
+      <button class="btn btn-warning btn-sm" disabled title="Só é possível remarcar com mais de 24h de antecedência">Remarcar</button>
+      <button class="btn btn-danger btn-sm" onclick="openCancelModal(${index})">Cancelar</button>
+    `;
+            }
+
+            return `
+    <button class="btn btn-warning btn-sm" onclick="openEditModal(${index})">Remarcar</button>
+    <button class="btn btn-danger btn-sm" onclick="openCancelModal(${index})">Cancelar</button>
+  `;
+        }
+
+        // Abrir modal Remarcar
+        function openEditModal(index) {
+            currentIndex = index;
+            document.getElementById('new-date').value = appointments[index].data;
+            document.getElementById('new-time').value = appointments[index].hora;
+
+            const appointmentDateTime = new Date(`${appointments[index].data}T${appointments[index].hora}`);
+            const now = new Date();
+            const hoursDiff = (appointmentDateTime - now) / (1000 * 60 * 60);
+            document.getElementById('modal-warning').style.display = hoursDiff < 24 ? 'block' : 'none';
+            document.getElementById('save-btn').disabled = hoursDiff < 24;
+
+            document.getElementById('editModal').style.display = 'block';
+        }
+
+        document.querySelector('#editModal .close').onclick = () => document.getElementById('editModal').style.display = 'none';
+        window.onclick = function (event) {
+            if (event.target == document.getElementById('editModal')) {
+                document.getElementById('editModal').style.display = 'none';
+            }
+            if (event.target == document.getElementById('cancelModal')) {
+                document.getElementById('cancelModal').style.display = 'none';
+            }
+        }
+
+        document.getElementById('save-btn').onclick = function () {
+            const newDate = document.getElementById('new-date').value;
+            const newTime = document.getElementById('new-time').value;
+            if (newDate && newTime) {
+                appointments[currentIndex].data = newDate;
+                appointments[currentIndex].hora = newTime;
+                renderAppointments();
+                document.getElementById('editModal').style.display = 'none';
+            }
+        }
+
+        // Modal Cancelar
+        function openCancelModal(index) {
+            currentIndex = index;
+            document.getElementById('cancelModal').style.display = 'block';
+        }
+
+        document.getElementById('close-cancel').onclick = () => document.getElementById('cancelModal').style.display = 'none';
+        document.getElementById('cancel-no').onclick = () => document.getElementById('cancelModal').style.display = 'none';
+        document.getElementById('cancel-yes').onclick = function () {
+            appointments.splice(currentIndex, 1);
+            renderAppointments();
+            document.getElementById('cancelModal').style.display = 'none';
+        }
+
+        renderAppointments();
+    </script>
+</body>
+
+</html>
