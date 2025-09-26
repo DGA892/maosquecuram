@@ -1,1 +1,31 @@
-<p>admin works!</p>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Massoterapia</title>
+  <link rel="stylesheet" href="assets/css/main.css" />
+</head>
+<body>
+  <header>
+    <h1>Painel do Administrador</h1>
+  </header>
+
+  <div class="container">
+    <nav class="sidebar">
+      <ul>
+        <li><a href="../agenda/agenda.component.html">Agenda</a></li>
+        <li><a href="../profissionais/profissionais.component.html">Profissionais</a></li>
+        <li><a href="../servicos/servicos.component.html">Serviços</a></li>
+        <li><a href="src/index.html">Voltar</a></li>
+      </ul>
+    </nav>
+
+    <script>
+      function toggleSlot(el) {
+        el.classList.toggle('filled');
+      }
+    </script>
+  </div>
+</body>
+</html>
