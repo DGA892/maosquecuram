@@ -1,6 +1,24 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
+
+describe('AppComponent', () => {
+  let component: AppComponent;
+  let fixture: ComponentFixture<AppComponent>;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      declarations: [AppComponent]
+    });
+    fixture = TestBed.createComponent(AppComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
 
 describe('AppComponent', () => {
   beforeEach(() => TestBed.configureTestingModule({
@@ -28,13 +46,21 @@ describe('AppComponent', () => {
   });
   // abre/fecha modal (use seus próprios botões)
 const modal = document.getElementById('agendamentoModal');
-const fecharModal = document.querySelector('.fechar-modal');
+const fecharModal = document.querySelector('.fechar-modal') as HTMLElement | null;
 
 function abrirModal() {
-  modal.style.display = 'block';
-  carregarProfissionais(); // carrega a lista toda vez que abre
+  if (modal) {
+    modal.style.display = 'block';
+    carregarProfissionais();
+  }
 }
-fecharModal.onclick = () => modal.style.display = 'none';
+
+if (fecharModal) {
+  fecharModal.onclick = () => {
+    if (modal) modal.style.display = 'none';
+  };
+}
+
 
 // buscar profissionais no back-end
 async function carregarProfissionais() {
@@ -42,77 +68,91 @@ async function carregarProfissionais() {
     const resp = await fetch('/professionals/api'); // endpoint JSON
     const profissionais = await resp.json();
     const select = document.getElementById('profissional');
-    select.innerHTML = '<option value="">Selecione</option>';
-    profissionais.forEach(p => {
-      const opt = document.createElement('option');
-      opt.value = p.id; // ou p.nome
-      opt.textContent = p.nome; // ou `${p.nome} - ${p.especialidade}`
-      select.appendChild(opt);
-    });
+    if (select) {
+      select.innerHTML = '<option value="">Selecione</option>';
+      profissionais.forEach((p: { id: string; nome: string | null; }) => {
+        const opt = document.createElement('option');
+        opt.value = p.id; // ou p.nome
+        opt.textContent = p.nome; // ou `${p.nome} - ${p.especialidade}`
+        select.appendChild(opt);
+      });
+    }
   } catch (err) {
     console.error('Erro ao carregar profissionais', err);
  }
 }
 
 // ação do botão Confirmar
-document.getElementById('agendarBtn').addEventListener('click', () => {
-  const servico = document.getElementById('servico').value;
-  const profissional = document.getElementById('profissional').value;
-  const data = document.getElementById('data').value;
-  const hora = document.getElementById('hora').value;
 
-  if (!servico || !profissional || !data || !hora) {
-    alert('Preencha todos os campos!');
-    return;
-  }
+const agendarBtn = document.getElementById('agendarBtn');
+if (agendarBtn) {
+  agendarBtn.addEventListener('click', () => {
+    const servico = (document.getElementById('servico') as HTMLInputElement).value;
+    const profissional = (document.getElementById('profissional') as HTMLInputElement).value;
+    const data = (document.getElementById('data') as HTMLInputElement).value;
+    const hora = (document.getElementById('hora') as HTMLInputElement).value;
 
-  // Exibir resumo (ou enviar via fetch POST)
-  const resumoDiv = document.getElementById('resumo');
-  resumoDiv.style.display = 'block';
-  resumoDiv.innerHTML = `
-    <p><strong>Serviço:</strong> ${servico}</p>
-    <p><strong>Profissional:</strong> ${profissional}</p>
-    <p><strong>Data:</strong> ${data}</p>
-    <p><strong>Horário:</strong> ${hora}</p>
-  `;
+    if (!servico || !profissional || !data || !hora) {
+      alert('Preencha todos os campos!');
+      return;
+    }
 
-  // Exemplo de POST para o back-end (descomente/adapte):
-  
-  fetch('/agendamentos/save', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({servico, profissionalId: profissional, data, hora})
-  })
-  .then(resp => {
-    if (resp.ok) alert('Agendamento salvo com sucesso!');
-    else alert('Erro ao salvar agendamento');
+    // Exibir resumo (ou enviar via fetch POST)
+    const resumoDiv = document.getElementById('resumo');
+    if (resumoDiv) {
+      resumoDiv.style.display = 'block';
+      resumoDiv.innerHTML = `
+        <p><strong>Serviço:</strong> ${servico}</p>
+        <p><strong>Profissional:</strong> ${profissional}</p>
+        <p><strong>Data:</strong> ${data}</p>
+        <p><strong>Horário:</strong> ${hora}</p>
+      `;
+    }
+
+    // Exemplo de POST para o back-end (descomente/adapte):
+    
+    fetch('/agendamentos/save', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({servico, profissionalId: profissional, data, hora})
+    })
+    .then(resp => {
+      if (resp.ok) alert('Agendamento salvo com sucesso!');
+      else alert('Erro ao salvar agendamento');
+    });
+    
   });
-  
-});
-</script>
+}
 
 
 
-  <!-- Controle de exibição dos links conforme login -->
-<script>
+  //<!-- Controle de exibição dos links conforme login -->
     fetch('/api/usuario-logado')
       .then(resp => resp.json())
       .then(user => {
         // Oculta tudo primeiro
-        document.querySelector('#liPerfil').style.display = 'none';
-        document.querySelector('#liAgendamentos').style.display = 'none';
-        document.querySelector('#liAdmin').style.display = 'none';
-        document.querySelector('#liSair').style.display = 'none';
+        const liPerfil = document.querySelector('#liPerfil');
+        if (liPerfil) (liPerfil as HTMLElement).style.display = 'none';
+        const liAgendamentos = document.querySelector('#liAgendamentos');
+        if (liAgendamentos) (liAgendamentos as HTMLElement).style.display = 'none';
+        const liAdmin = document.querySelector('#liAdmin');
+        if (liAdmin) (liAdmin as HTMLElement).style.display = 'none';
+        const liSair = document.querySelector('#liSair');
+        if (liSair) (liSair as HTMLElement).style.display = 'none';
 
         if(user){
-          document.querySelector('#liPerfil').style.display = 'block';
-          document.querySelector('#liSair').style.display = 'block';
+          const liPerfilBlock = document.querySelector('#liPerfil');
+          if (liPerfilBlock) (liPerfilBlock as HTMLElement).style.display = 'block';
+          const liSairBlock = document.querySelector('#liSair');
+          if (liSairBlock) (liSairBlock as HTMLElement).style.display = 'block';
 
           if(user.role === 'CLIENTE'){
-            document.querySelector('#liAgendamentos').style.display = 'block';
+            const liAgendamentosBlock = document.querySelector('#liAgendamentos');
+            if (liAgendamentosBlock) (liAgendamentosBlock as HTMLElement).style.display = 'block';
           }
           if(user.role === 'ADMIN'){
-            document.querySelector('#liAdmin').style.display = 'block';
+            const liAdminBlock = document.querySelector('#liAdmin') as HTMLElement;
+            if (liAdminBlock) liAdminBlock.style.display = 'block';
           }
         }
       });

@@ -91,6 +91,8 @@
               "src/assets/css/main.css",
               "src/assets/vendor/bootstrap/css/bootstrap.min.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "src/assets/vendor/bootstrap-icons/bootstrap-icons.css",
+              "src/assets/vendor/boxicons/css/boxicons.min.css",
               "src/styles.css"
             ],
             "scripts": [

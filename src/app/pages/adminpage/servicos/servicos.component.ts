@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-servicos',
   templateUrl: './servicos.component.html',
-  styleUrls: ['./assets/css/admin.css']
+  styleUrls: ['./servicos.component.css']
 })
 export class ServicosComponent {
 

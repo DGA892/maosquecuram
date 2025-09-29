@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-//Components
 import { AppointmentsComponent } from './pages/perfil/appointments/appointments.component';
 import { AdminComponent } from './pages/adminpage/admin/admin.component';
 import { AgendaComponent } from './pages/adminpage/agenda/agenda.component';
@@ -11,7 +10,6 @@ import { RegistrarComponent } from './pages/contas/registrar/registrar.component
 import { LogarComponent } from './pages/contas/logar/logar.component';
 
 
-///other imports
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
