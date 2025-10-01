@@ -1,7 +1,7 @@
 package com.maosquecuram.crud.controllers;
 
-import com.maosQueCuram.crud.entities.Agendamento;
-import com.maosQueCuram.crud.repositories.AgendamentoRepository;
+import com.maosquecuram.crud.entities.Agendamento;
+import com.maosquecuram.crud.repositories.AgendamentoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

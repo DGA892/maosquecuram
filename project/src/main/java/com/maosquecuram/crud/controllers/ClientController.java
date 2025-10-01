@@ -1,7 +1,7 @@
 package com.maosquecuram.crud.controllers;
 
-import com.maosQueCuram.crud.entities.User;
-import com.maosQueCuram.crud.repositories.UserRepository;
+import com.maosquecuram.crud.entities.User;
+import com.maosquecuram.crud.repositories.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
