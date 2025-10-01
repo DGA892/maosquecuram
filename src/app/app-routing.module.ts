@@ -8,26 +8,32 @@ import { ProfissionaisComponent } from './pages/adminpage/profissionais/profissi
 import { AgendaComponent } from './pages/adminpage/agenda/agenda.component';
 import { AppointmentsComponent } from './pages/perfil/appointments/appointments.component';
 import { AdminComponent } from './pages/adminpage/admin/admin.component';
+import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
+import { AppComponent } from './app.component';
 
 
-  const routes: Routes = [
-    { path: 'appointments', component: AppointmentsComponent },
-    { path: 'admin', component: AdminComponent },
-    { path: 'agenda', component: AgendaComponent },
-    { path: 'profissionais', component: ProfissionaisComponent },
-    { path: 'servicos', component: ServicosComponent },
-    { path: 'registrar', component: RegistrarComponent },
-    { path: 'logar', component: LogarComponent },
-    { path: 'profile', component: ProfileComponent },
-    { path: '', redirectTo: '/logar', pathMatch: 'full' }
-  ];
+const routes: Routes = [
+  { path: 'appointments', component: AppointmentsComponent },
+  { path: 'admin', component: AdminComponent },
+  { path: 'agenda', component: AgendaComponent },
+  { path: 'profissionais', component: ProfissionaisComponent },
+  { path: 'servicos', component: ServicosComponent },
+  { path: 'registrar', component: RegistrarComponent },
+  { path: 'logar', component: LogarComponent },
+  { path: 'profile', component: ProfileComponent },
+  { path: '', redirectTo: '/logar', pathMatch: 'full' }
+];
 
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  imports: [BrowserModule,
+    RouterModule.forRoot(routes),
+    FormsModule],
+  bootstrap: [AppComponent],
+  exports: []
 })
 export class AppRoutingModule {
 
 
- }
+}

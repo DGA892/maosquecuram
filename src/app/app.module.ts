@@ -9,12 +9,9 @@ import { ServicosComponent } from './pages/adminpage/servicos/servicos.component
 import { RegistrarComponent } from './pages/contas/registrar/registrar.component';
 import { LogarComponent } from './pages/contas/logar/logar.component';
 
-
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
-
-import { ProfileComponent } from './pages/perfil/profile/profile.component';
 import { AgendaModule } from './pages/adminpage/agenda/agenda.module';
 import { ServicosModule } from './pages/adminpage/servicos/servicos.module';
 import { ProfissionaisModule } from './pages/adminpage/profissionais/profissionais.module';
@@ -25,6 +22,8 @@ import { CommonModule } from '@angular/common';
 import { ProfileModule } from './pages/perfil/profile/profile.module';
 import { AppointmentsModule } from './pages/perfil/appointments/appointments.module';
 import { HeaderComponent } from './layout/header/header.component';
+import { FooterModule } from './shared/footer/footer.module';
+import { SharedModule } from './shared/shared.module';
 
 
 @NgModule({
@@ -34,6 +33,7 @@ import { HeaderComponent } from './layout/header/header.component';
   ],
 
   imports: [
+    SharedModule,
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
