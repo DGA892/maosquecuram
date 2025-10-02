@@ -4,175 +4,82 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Agenda de Massoterapia</title>
-  <link rel="stylesheet" href="agenda.component.css" />
+  <title>Admin Massoterapia</title>
 </head>
 
 <body>
   <header>
     <h1>Painel do Administrador</h1>
   </header>
-
   <div class="container">
-    <nav class="sidebar">
-      <ul>
-        <li><a href="agenda.component.html">Agenda</a></li>
-        <li><a href="../profissionais/profissionais.component.html">Profissionais</a></li>
-        <li><a href="../servicos/servicos.component.html">Serviços</a></li>
-        <li><a href="/src/index.html">Voltar</a></li>
-      </ul>
-    </nav>
+
+    <app-sidebar></app-sidebar>
 
     <main class="content">
       <h2>Agenda do Mês</h2>
       <div class="calendar-controls">
-        <button onclick="prevMonth()">&#8592; Mês Anterior</button>
-        <span id="monthLabel"></span>
-        <button onclick="nextMonth()">Próximo Mês &#8594;</button>
-        <button onclick="toggleHolidayMode(this)">Modo Feriado: DESATIVADO</button>
-        <button onclick="printSchedule()">Imprimir Relatório do Dia</button>
+        <button (click)="prevMonth()">&#8592; Mês Anterior</button>
+        <span>{{ currentDate | date:'MMMM yyyy' }}</span>
+        <button (click)="nextMonth()">Próximo Mês &#8594;</button>
+        <button (click)="toggleHolidayMode()">
+          Modo Feriado: {{ holidayMode ? 'ATIVO' : 'DESATIVADO' }}
+        </button>
       </div>
-      <div id="monthlyCalendar" class="monthly-calendar"></div>
-      <div id="daySchedule" class="calendar" style="margin-top: 2rem; display: none;"></div>
+
+      <div class="monthly-calendar">
+        <div *ngFor="let day of daysInMonth"
+       class="day-block"
+       [ngClass]="{'holiday': isHoliday(day)}"
+       (click)="holidayMode ? markHoliday(day) : selectDay(day)">
+    {{ day }} ({{ getWeekday(day) }})
+  </div>
+      </div>
+
+      <div class="calendar" *ngIf="selectedDate">
+        <h3>{{ selectedDate | date:'fullDate' }}</h3>
+        <div class="hours">
+          <div *ngFor="let slot of daySchedule" class="slot" [class.filled]="slot.agendamento"
+            (click)="markSlot(slot.hour)">
+            {{ slot.hour }}
+            <div *ngIf="slot.agendamento" class="client-card">
+              <strong>Cliente:</strong> {{ slot.agendamento.nome }}<br>
+              <strong>Email:</strong> {{ slot.agendamento.email }}<br>
+              <strong>Profissional:</strong> {{ slot.agendamento.profissional }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal de Agendamento -->
+      <div class="modal" *ngIf="showModal">
+        <div class="modal-content">
+          <span class="close" (click)="closeModal()">&times;</span>
+          <h3>Agendar Horário: {{ selectedHour }} - {{ selectedDate | date:'fullDate' }}</h3>
+
+          <div class="input-group">
+            <label>Serviço:</label>
+            <select [(ngModel)]="servicoSelecionado">
+              <option *ngFor="let s of servicos" [value]="s">{{ s }}</option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label>Cliente:</label>
+            <select [(ngModel)]="clienteSelecionado">
+              <option *ngFor="let c of clientes" [value]="c">{{ c }}</option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label>Profissional:</label>
+            <select [(ngModel)]="profissionalSelecionado">
+              <option *ngFor="let p of profissionais" [value]="p">{{ p }}</option>
+            </select>
+          </div>
+
+          <button (click)="confirmSchedule()">Confirmar</button>
+        </div>
+      </div>
+
     </main>
   </div>
-
-  <script>
-    const monthLabel = document.getElementById("monthLabel");
-    const monthlyCalendar = document.getElementById("monthlyCalendar");
-    const daySchedule = document.getElementById("daySchedule");
-
-    let selectedDate = null;
-    let holidayMode = false;
-    let currentDate = new Date();
-
-    const weekdays = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
-    const hours = ["08:00", "09:00", "10:00", "11:00", "12:00"];
-
-    const agendamentos = {
-      "2025-07-10": {
-        "08:00": { nome: "João da Silva", email: "joao@example.com", profissional:"Ana" },
-        "10:00": { nome: "Maria Souza", email: "maria@example.com", profissional:"João" }
-      }
-    };
-
-    const feriados = new Set(); // formato: "YYYY-MM-DD"
-
-    function updateCalendar() {
-      monthlyCalendar.innerHTML = "";
-      const year = currentDate.getFullYear();
-      const month = currentDate.getMonth();
-
-      const daysInMonth = new Date(year, month + 1, 0).getDate();
-      monthLabel.textContent = `${currentDate.toLocaleString("pt-BR", { month: "long" })} ${year}`;
-
-      for (let day = 1; day <= daysInMonth; day++) {
-        const date = new Date(year, month, day);
-        const block = document.createElement("div");
-        block.classList.add("day-block");
-        block.textContent = `${day} (${weekdays[date.getDay()]})`;
-
-        const dateKey = date.toISOString().split("T")[0];
-
-        if (feriados.has(dateKey)) {
-          block.classList.add("holiday");
-        }
-
-        block.onclick = () => {
-          if (holidayMode) {
-            if (feriados.has(dateKey)) {
-              feriados.delete(dateKey);
-              block.classList.remove("holiday");
-            } else {
-              feriados.add(dateKey);
-              block.classList.add("holiday");
-            }
-          } else if (feriados.has(dateKey)) {
-            alert("Dia marcado como feriado. Não é possível agendar.");
-          } else {
-            selectedDate = date;
-            showScheduleForDay();
-          }
-        };
-
-        monthlyCalendar.appendChild(block);
-      }
-    }
-
-    function showScheduleForDay() {
-      daySchedule.innerHTML = "";
-      daySchedule.style.display = "flex";
-
-      const day = selectedDate.toLocaleDateString("pt-BR", { weekday: "long" });
-      const dayDiv = document.createElement("div");
-      dayDiv.classList.add("day");
-
-      const title = document.createElement("h3");
-      title.textContent = `${day} - ${selectedDate.toLocaleDateString("pt-BR")}`;
-      dayDiv.appendChild(title);
-
-      const hoursContainer = document.createElement("div");
-      hoursContainer.classList.add("hours");
-
-      const dateKey = selectedDate.toISOString().split("T")[0];
-
-      hours.forEach(hour => {
-        const slot = document.createElement("div");
-        slot.classList.add("slot");
-        slot.textContent = hour;
-
-        const infoCard = document.createElement("div");
-        infoCard.classList.add("client-card");
-
-        if (agendamentos[dateKey] && agendamentos[dateKey][hour]) {
-          const { nome, email, profissional } = agendamentos[dateKey][hour];
-          infoCard.innerHTML = `
-            <strong>Cliente:</strong> ${nome}<br>
-            <strong>Email:</strong> ${email}<br>
-            <strong>Profissional</strong> ${profissional}
-          `;
-          slot.classList.add("filled");
-        } else {
-          infoCard.textContent = "Não há consultas marcadas";
-        }
-
-        slot.appendChild(infoCard);
-        hoursContainer.appendChild(slot);
-      });
-
-      dayDiv.appendChild(hoursContainer);
-      daySchedule.appendChild(dayDiv);
-      daySchedule.scrollIntoView({ behavior: "smooth" });
-    }
-
-    function prevMonth() {
-      currentDate.setMonth(currentDate.getMonth() - 1);
-      updateCalendar();
-      daySchedule.style.display = "none";
-    }
-
-    function nextMonth() {
-      currentDate.setMonth(currentDate.getMonth() + 1);
-      updateCalendar();
-      daySchedule.style.display = "none";
-    }
-
-    function toggleHolidayMode(button) {
-      holidayMode = !holidayMode;
-      button.textContent = holidayMode ? "Modo Feriado: ATIVO" : "Modo Feriado: DESATIVADO";
-      button.style.backgroundColor = holidayMode ? "#e74c3c" : "#2d89ef";
-    }
-
-    function printSchedule() {
-      if (!selectedDate) {
-        alert("Selecione um dia para imprimir o relatório.");
-        return;
-      }
-      window.print();
-    }
-
-    updateCalendar();
-  </script>
-</body>
-
-</html>

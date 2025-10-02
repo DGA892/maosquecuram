@@ -12,7 +12,6 @@ import { RegistrarComponent } from './pages/contas/registrar/registrar.component
 import { LogarComponent } from './pages/contas/logar/logar.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/logar', pathMatch: 'full' },
   { path: 'logar', component: LogarComponent },
   { path: 'registrar', component: RegistrarComponent },
   { path: 'profile', component: ProfileComponent },

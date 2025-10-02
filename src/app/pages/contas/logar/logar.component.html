@@ -1,52 +1,54 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login - Mãos que Curam</title>
   <link href="./logar.component.css" rel="stylesheet">
-  <link  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
 </head>
+
 <body>
 
   <div class="login-page">
 
     <!-- Imagem de fundo -->
     <div class="carousel-background">
-			<img src="/src/assets/img/fundo1.png" class="active" />
-      </div>
+      <img src="assets/img/fundo1.png" class="active" />
+    </div>
 
     <!-- Fundo desfocado -->
     <div class="background"></div>
 
     <!-- Card de login -->
     <div class="login-card">
-      <img src="/src/main/resources/static/img/logo.png" alt="Logo" class="logo" />
+      <img src="assets/img/logo.png" alt="Logo" class="logo" />
       <h1 class="title">Mãos que Curam</h1>
       <p class="subtitle">Bem-vindo de volta! Faça login para continuar</p>
 
-      <form>
-        <!-- E-mail -->
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
         <div class="input-group">
           <i class="fas fa-envelope icon"></i>
-          <input type="email" placeholder="E-mail" required>
+          <input type="email" placeholder="E-mail" formControlName="email" required>
         </div>
 
-        <!-- Senha -->
         <div class="input-group">
           <i class="fas fa-lock icon"></i>
-          <input type="password" placeholder="Senha" required>
+          <input type="password" placeholder="Senha" formControlName="senha" required>
         </div>
 
-        <!-- Botão de login -->
-        <button type="submit" class="login-btn">Entrar</button>
+        <button type="submit" class="login-btn" [disabled]="loginForm.invalid">Entrar</button>
       </form>
 
+      <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
+
       <p class="register-link">
-        Ainda não tem uma conta? <a href="../registrar/registrar.component.html">Registre-se aqui</a>
+        Ainda não tem uma conta? <a [routerLink]="['/registrar']">Registre-se aqui</a>
       </p>
     </div>
   </div>
 
 </body>
+
 </html>

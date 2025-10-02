@@ -274,6 +274,6 @@ header {
 }
 
 .day-block.holiday {
-  background-color: var(--highlight-color);
-  color: var(--contrast-color);
+  background-color: #e74c3c; /* vermelho */
+  color: #fff;
 }

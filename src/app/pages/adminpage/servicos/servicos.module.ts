@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ServicosComponent } from './servicos.component';
+import { SidebarModule } from '../admin/shared/sidebar/sidebar.module';
 
 
 
@@ -8,7 +9,8 @@ import { ServicosComponent } from './servicos.component';
   declarations: [
     ServicosComponent],
   imports: [
-    CommonModule
+    CommonModule,
+    SidebarModule
   ],
   exports:[
     ServicosComponent

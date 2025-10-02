@@ -14,7 +14,7 @@
 
 		<!-- Imagem de fundo -->
 		<div class="carousel-background">
-			<img src="/src/assets/img/fundo1.png" class="active" />
+			<img src="assets/img/fundo1.png" class="active" />
 		</div>
 
 		<!-- Fundo desfocado -->
@@ -22,42 +22,42 @@
 
 		<!-- Card de registro -->
 		<div class="login-card">
-			<img src="/src/assets/img/logo.png" alt="Logo" class="logo" />
+			<img src="assets/img/logo.png" alt="Logo" class="logo" />
 			<h1 class="title">Mãos que Curam</h1>
 			<p class="subtitle">Preencha os dados para criar sua conta</p>
 
-			<form th:action="@{/users/save}" th:object="${user}" method="post">
-				<div class="input-group">
-					<i class="fas fa-user icon"></i> <input type="text"
-						th:field="*{nome}" placeholder="Nome completo" required />
-				</div>
+			<form [formGroup]="registrarForm" (ngSubmit)="onSubmit()">
 
-				<div class="input-group">
-					<i class="fas fa-envelope icon"></i> <input type="email"
-						th:field="*{email}" placeholder="E-mail" required />
-				</div>
+      <div class="input-group">
+        <i class="fas fa-user icon"></i>
+        <input type="text" placeholder="Nome completo" formControlName="nome" required />
+      </div>
 
-				<div class="input-group">
-					<i class="fas fa-phone icon"></i> <input type="tel"
-						th:field="*{numtel}" id="telefone" placeholder="(00)00000-0000"
-						maxlength="15" required />
-				</div>
+      <div class="input-group">
+        <i class="fas fa-envelope icon"></i>
+        <input type="email" placeholder="E-mail" formControlName="email" required />
+      </div>
 
-				<div class="input-group">
-					<i class="fas fa-calendar icon"></i> <input type="date"
-						th:field="*{dataNascimento}" required />
-				</div>
+      <div class="input-group">
+        <i class="fas fa-phone icon"></i>
+        <input type="tel" placeholder="(00)00000-0000" formControlName="numtel" id="telefone" maxlength="15" required />
+      </div>
 
-				<div class="input-group">
-					<i class="fas fa-lock icon"></i> <input type="password"
-						th:field="*{senha}" placeholder="Senha" required />
-				</div>
+      <div class="input-group">
+        <i class="fas fa-calendar icon"></i>
+        <input type="date" formControlName="dataNascimento" required />
+      </div>
 
-				<button type="submit" class="login-btn">Registrar</button>
-			</form>
+      <div class="input-group">
+        <i class="fas fa-lock icon"></i>
+        <input type="password" placeholder="Senha" formControlName="senha" required />
+      </div>
+
+      <button type="submit" class="login-btn" [disabled]="registrarForm.invalid">Registrar</button>
+    </form>
 
 			<p class="register-link">
-				Já tem uma conta? <a href="../logar/logar.component.html">Entre aqui</a>
+				Já tem uma conta? <a [routerLink]="['/Logar']">Entre aqui</a>
 			</p>
 		</div>
 	</div>

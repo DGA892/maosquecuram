@@ -19,13 +19,13 @@
 		    <ul>
 		      <!-- Só exibe se há usuário logado -->
 		    <li if="${user != null}">
-		        <a href="./users/profile.html">Perfil</a>
+		        <a [routerLink]="['Profile']">Perfil</a>
 		      </li>
 		    <li if="${user != null and user.role == 'CLIENTE'}">
-		        <a href="./users/appointments.html">Agendamentos</a>
+		        <a [routerLink]="['/Appointments']">Agendamentos</a>
 		      </li>
 		    <li if="${user != null and user.role == 'ADMIN'}">
-		        <a href="./adminpage/admin.html">Página de administração</a>
+		        <a [routerLink]="['/Admin']">Página de administração</a>
 		      </li>
 			<li if="${user != null}">
 		        <a href="/logout">Sair</a>
@@ -35,7 +35,7 @@
 		    <li if="${user == null}">
 				<a href="./login/login.html">Entrar</a>		      </li>
 		    <li if="${user == null}">
-		        <a href="./login/registrar.html">Criar Conta</a>
+		        <a [routerLink]="['/Registrar']">Criar Conta</a>
 		      </li>
 		    </ul>
 		  </li>

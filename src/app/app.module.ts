@@ -22,11 +22,13 @@ import { ProfileModule } from './pages/perfil/profile/profile.module';
 import { AppointmentsModule } from './pages/perfil/appointments/appointments.module';
 import { FooterModule } from './shared/footer/footer.module';
 import { SharedModule } from './shared/shared.module';
+import { HomeComponent } from './pages/home/home.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HeaderComponent
+    HeaderComponent,
+    HomeComponent,
   ],
   imports: [
     BrowserModule,

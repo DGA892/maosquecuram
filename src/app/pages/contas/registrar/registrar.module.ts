@@ -1,17 +1,21 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RegistrarComponent } from './registrar.component';
-
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
-    RegistrarComponent,
+    RegistrarComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule, // <<--- ESSENCIAL
+    RouterModule
   ],
   exports: [
-    RegistrarComponent,
+    RegistrarComponent
   ]
 })
-export class RegistrarModule { }
+export class RegistrarModule {}
