@@ -1,10 +1,11 @@
 package com.maosquecuram.crud.repositories;
 
+import com.maosquecuram.crud.entities.Agendamento;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.maosquecuram.crud.entities.Agendamento;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> {
-    // aqui você pode criar métodos de busca personalizada, ex:
-    // List<Agendamento> findByDataAndProfissional(LocalDate data, String profissional);
+    boolean existsByProfissionalAndDataAndHora(String profissional, LocalDate data, LocalTime hora);
 }

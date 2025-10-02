@@ -1,56 +1,84 @@
 package com.maosquecuram.crud.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Entity
+@Table(name = "agendamentos")
 public class Agendamento {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Serviço é obrigatório")
     private String servico;
-
-    @NotBlank(message = "Profissional é obrigatório")
     private String profissional;
-
-    @NotNull(message = "Data é obrigatória")
+    private String user;
     private LocalDate data;
-
-    @NotNull(message = "Hora é obrigatória")
     private LocalTime hora;
-
-    // Se quiser vincular ao usuário logado
-    // @ManyToOne
-    // private User usuario;
 
     public Agendamento() {}
 
-    public Agendamento(String servico, String profissional, LocalDate data, LocalTime hora) {
+    public Agendamento(String servico, String profissional, String user, LocalDate data, LocalTime hora) {
         this.servico = servico;
         this.profissional = profissional;
+        this.user = user;
         this.data = data;
         this.hora = hora;
     }
 
-    // Getters e setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+     // Getters e Setters
 
-    public String getServico() { return servico; }
-    public void setServico(String servico) { this.servico = servico; }
+	public Long getId() {
+		return id;
+	}
 
-    public String getProfissional() { return profissional; }
-    public void setProfissional(String profissional) { this.profissional = profissional; }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public LocalDate getData() { return data; }
-    public void setData(LocalDate data) { this.data = data; }
+	public String getServico() {
+		return servico;
+	}
 
-    public LocalTime getHora() { return hora; }
-    public void setHora(LocalTime hora) { this.hora = hora; }
+	public void setServico(String servico) {
+		this.servico = servico;
+	}
+
+	public String getProfissional() {
+		return profissional;
+	}
+
+	public void setProfissional(String profissional) {
+		this.profissional = profissional;
+	}
+
+	public String getUser() {
+		return user;
+	}
+
+	public void setUser(String user) {
+		user = user;
+	}
+
+	public LocalDate getData() {
+		return data;
+	}
+
+	public void setData(LocalDate data) {
+		this.data = data;
+	}
+
+	public LocalTime getHora() {
+		return hora;
+	}
+
+	public void setHora(LocalTime hora) {
+		this.hora = hora;
+	}
+
+   
+    
+    
 }
+                        
