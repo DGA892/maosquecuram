@@ -1,4 +1,3 @@
-<p>profile works!</p>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -55,14 +54,14 @@
   <!-- ======= Header ======= -->
   <header id="header" class="header d-flex align-items-center">
     <div class="container d-flex align-items-center justify-content-between">
-      <a th:href="@{/}" class="logo d-flex align-items-center me-auto me-lg-0">
-        <img src="/src/main/resources/static/img/logo.png" alt="Mãos que Curam">
+        <a [routerLink]="['/home']" class="logo d-flex align-items-center">
+        <img src="assets/img/logo.png" alt="Mãos que Curam">
         <h1 class="sitename"><span>Mãos que Curam</span></h1>
       </a>
       <nav id="navbar" class="navbar">
         <ul>
-          <li><a href="../index.html">Início</a></li>
-          <li><a href="../users/appointments.html">Meus Agendamentos</a></li>
+          <li><a [routerLink]="['/home']">Início</a></li>
+          <li><a [routerLink]="['/appointments']">Meus Agendamentos</a></li>
         </ul>
       </nav>
     </div>
@@ -84,7 +83,7 @@
             <div class="profile-container">
               <!-- Foto de perfil -->
               <div>
-                <img src="../../../resources/static/img/user-default.jpg" alt="Foto do Usuário" class="profile-pic" id="profileImage">
+                <img src="assets/img/user-default.jpg" alt="Foto do Usuário" class="profile-pic" id="profileImage">
                 <input type="file" id="uploadPhoto" accept="image/*" hidden>
                 <button type="button" class="btn btn-outline-primary change-photo-btn" onclick="document.getElementById('uploadPhoto').click()">Alterar Foto</button>
               </div>
@@ -164,8 +163,8 @@
   </footer><!-- End Footer -->
 
   <!-- Scripts -->
-  <script src="../../../resources/static/js/bootstrap.bundle.min.js"></script>
-  <script src="../../../resources/static/js/main.js"></script>
+  <script src="assets/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/main.js"></script>
 
   <script>
     // Função para habilitar edição do campo

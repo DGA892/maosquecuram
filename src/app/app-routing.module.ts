@@ -10,8 +10,11 @@ import { ProfissionaisComponent } from './pages/adminpage/profissionais/profissi
 import { ServicosComponent } from './pages/adminpage/servicos/servicos.component';
 import { RegistrarComponent } from './pages/contas/registrar/registrar.component';
 import { LogarComponent } from './pages/contas/logar/logar.component';
+import { HomeComponent } from './pages/home/home.component';
 
 const routes: Routes = [
+  { path: '', redirectTo: '/home', pathMatch: 'full'},
+  { path: 'home', component: HomeComponent},
   { path: 'logar', component: LogarComponent },
   { path: 'registrar', component: RegistrarComponent },
   { path: 'profile', component: ProfileComponent },

@@ -257,7 +257,6 @@
         }
 
         renderAppointments();
-    </script>
 
 
 })();

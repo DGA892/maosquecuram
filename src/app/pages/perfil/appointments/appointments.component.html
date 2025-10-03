@@ -1,4 +1,3 @@
-<p>appointments works!</p>
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -51,14 +50,14 @@
     <!-- Header -->
     <header id="header" class="header d-flex align-items-center">
         <div class="container d-flex align-items-center justify-content-between">
-            <a href="index.html" class="logo d-flex align-items-center me-auto me-lg-0">
-                <img src="/src/main/resources/static/img/logo.png" alt="Mãos que Curam">
+            <a [routerLink]="['/home']" class="logo d-flex align-items-center me-auto me-lg-0">
+                <img src="assets/img/logo.png" alt="Mãos que Curam">
                 <h1 class="sitename"><span>Mãos que Curam</span></h1>
             </a>
             <nav id="navbar" class="navbar">
                 <ul>
-                    <li><a href="../index.html">Início</a></li>
-                    <li><a href="../users/profile.html">Perfil</a></li>
+                    <li><a [routerLink]="['/home']">Início</a></li>
+                    <li><a [routerLink]="['/profile']">Perfil</a></li>
                 </ul>
             </nav>
         </div>

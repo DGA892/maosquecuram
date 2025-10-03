@@ -6,5 +6,21 @@ import { Component } from '@angular/core';
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent {
+  
+  scrollTo(sectionId: string) {
+  document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
+}
+
+abrirModal() {
+  const modal = document.getElementById('agendamentoModal');
+  if (modal) modal.style.display = 'block';
+}
+
+fecharModal() {
+  const modal = document.getElementById('agendamentoModal');
+  if (modal) modal.style.display = 'none';
+}
+
+  
 
 }

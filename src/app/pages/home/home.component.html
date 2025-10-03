@@ -1,247 +1,127 @@
 <header id="header" class="header d-flex align-items-center sticky-top">
-    <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+  <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
 
-      <a href="index.html" class="logo d-flex align-items-center">
-        <!-- Uncomment the line below if you also wish to use an image logo -->
-        <img src="assets/img/logo.png" alt="Mãos que Curam">
-        <h1 class="sitename"><span>Mãos que Curam</span></h1>
-      </a>
+    <a [routerLink]="['/home']" class="logo d-flex align-items-center">
+      <img src="assets/img/logo.png" alt="Mãos que Curam">
+      <h1 class="sitename"><span>Mãos que Curam</span></h1>
+    </a>
 
-      <nav id="navmenu" class="navmenu">
-        <ul>
-          <li><a href="#about" class="active">Início</a></li>
-          <li><a href="#about">Sobre</a></li>
-          <li><a href="#services">Serviços</a></li>
-          <li><a href="#features">Recursos</a></li>
-          <li><a href="#pricing">Preços</a></li>
-		  <li class="dropdown">
-		    <a href="#"><span>Conta</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-		    <ul>
-		      <!-- Só exibe se há usuário logado -->
-		    <li if="${user != null}">
-		        <a [routerLink]="['Profile']">Perfil</a>
-		      </li>
-		    <li if="${user != null and user.role == 'CLIENTE'}">
-		        <a [routerLink]="['/Appointments']">Agendamentos</a>
-		      </li>
-		    <li if="${user != null and user.role == 'ADMIN'}">
-		        <a [routerLink]="['/Admin']">Página de administração</a>
-		      </li>
-			<li if="${user != null}">
-		        <a href="/logout">Sair</a>
-		      </li>
-
-		      <!-- Se não estiver logado, exibe login -->
-		    <li if="${user == null}">
-				<a href="./login/login.html">Entrar</a>		      </li>
-		    <li if="${user == null}">
-		        <a [routerLink]="['/Registrar']">Criar Conta</a>
-		      </li>
-		    </ul>
-		  </li>
-          <li><a href="#contact">Agendar</a></li>
-        </ul>
-        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
-      </nav>
-
-    </div>
-  </header>
-
-
-  <!-- About Section -->
-  <section id="about" class="about section">
-
-    <div class="container">
-
-      <div class="row gy-4">
-
-        <div class="col-lg-6 content" data-aos="fade-up" data-aos-delay="100">
-          <p class="who-we-are">Quem somos nós</p>
-          <h3> Você pode escolher conforme o tom que deseja (profissional, acolhedor ou inspirador)</h3>
-          <p class="fst-italic">
-
-          </p>
+    <nav id="navmenu" class="navmenu">
+      <ul>
+        <li><a href="#about" class="active">Início</a></li>
+        <li><a (click)="scrollTo('about')">Sobre</a></li>
+        <li><a (click)="scrollTo('services')">Serviços</a></li>
+        <li><a (click)="scrollTo('features')">Recursos</a></li>
+        <li><a (click)="scrollTo('pricing')">Preços</a></li>
+        <li class="dropdown">
+          <a href="#"><span>Conta</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
           <ul>
-            <li><i class="bi bi-check-circle"></i> <span>Cuidar de você é nossa maior missão.</span></li>
-            <li><i class="bi bi-check-circle"></i> <span>Cada toque é pensado para transformar o seu dia.</span></li>
-            <li><i class="bi bi-check-circle"></i> <span>Aqui, corpo e mente encontram equilíbrio e harmonia.</span>
+            <!-- Só exibe se há usuário logado -->
+            <li if="${user != null}">
+              <a [routerLink]="['/profile']">Perfil</a>
+            </li>
+            <li if="${user != null and user.role == 'CLIENTE'}">
+              <a [routerLink]="['/appointments']">Agendamentos</a>
+            </li>
+            <li if="${user != null and user.role == 'ADMIN'}">
+              <a [routerLink]="['/admin']">Página de administração</a>
+            </li>
+            <li if="${user != null}">
+              <a href="/logout">Sair</a>
+            </li>
+
+            <!-- Se não estiver logado, exibe login -->
+            <li if="${user == null}">
+              <a [routerLink]="['/logar']">Entrar</a>
+            </li>
+            <li if="${user == null}">
+              <a [routerLink]="['/registrar']">Criar Conta</a>
             </li>
           </ul>
-        </div>
+        </li>
+        <li><a (click)="abrirModal()">Agendar</a></li>
 
-        <div class="col-lg-6 about-images" data-aos="fade-up" data-aos-delay="200">
-          <div class="row gy-4">
-            <div class="col-lg-6">
-              <img src="assets/img/about-company-1.jpg" class="img-fluid" alt="">
-            </div>
-            <div class="col-lg-6">
-              <div class="row gy-4">
-                <div class="col-lg-12">
-                  <img src="assets/img/about-company-2.jpg" class="img-fluid" alt="">
-                </div>
-                <div class="col-lg-12">
-                  <img src="assets/img/about-company-3.jpg" class="img-fluid" alt="">
-                </div>
-              </div>
-            </div>
+        <!-- Modal de Agendamento -->
+        <div id="agendamentoModal" class="agendamento-modal" style="display:none;">
+          <div class="agendamento-content">
+            <span class="fechar-modal" (click)="fecharModal()">&times;</span>
+            <h2>Agendar Sessão</h2>
+
+            <label for="servico">Serviço</label>
+            <select id="servico">
+              <option value="">Selecione</option>
+              <option value="Massagem Relaxante">Massagem Relaxante</option>
+              <option value="Massagem Terapêutica">Massagem Terapêutica</option>
+              <option value="Drenagem Linfática">Drenagem Linfática</option>
+            </select>
+
+            <label for="profissional">Profissional</label>
+            <select id="profissional">
+              <option value="">Selecione</option>
+              <!-- opções vêm do back-end -->
+            </select>
+
+            <label for="data">Data</label>
+            <input type="date" id="data">
+
+            <label for="hora">Horário</label>
+            <select id="hora">
+              <option value="">Selecione</option>
+              <option value="08:00">08:00</option>
+              <option value="09:00">09:00</option>
+              <option value="10:00">10:00</option>
+              <option value="11:00">11:00</option>
+              <option value="12:00">12:00</option>
+            </select>
+
+            <button id="agendarBtn">Confirmar Agendamento</button>
+
+            <div id="resumo" class="resumo" style="display:none;"></div>
           </div>
-
         </div>
+      </ul>
+      <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+    </nav>
 
+  </div>
+</header>
+
+
+<!-- About Section -->
+<section id="about" class="about section">
+
+  <div class="container">
+
+    <div class="row gy-4">
+
+      <div class="col-lg-6 content" data-aos="fade-up" data-aos-delay="100">
+        <p class="who-we-are">Quem somos nós</p>
+        <h3> Você pode escolher conforme o tom que deseja (profissional, acolhedor ou inspirador)</h3>
+        <p class="fst-italic">
+
+        </p>
+        <ul>
+          <li><i class="bi bi-check-circle"></i> <span>Cuidar de você é nossa maior missão.</span></li>
+          <li><i class="bi bi-check-circle"></i> <span>Cada toque é pensado para transformar o seu dia.</span></li>
+          <li><i class="bi bi-check-circle"></i> <span>Aqui, corpo e mente encontram equilíbrio e harmonia.</span>
+          </li>
+        </ul>
       </div>
 
-    </div>
-  </section><!-- /About Section -->
-
-  <!-- Services Section -->
-  <section id="services" class="services section">
-
-    <!-- Section Title -->
-    <div class="container section-title" data-aos="fade-up">
-      <h2>Serviços</h2>
-      <div><span>Veja nossos</span> <span class="description-title">Serviços</span></div>
-    </div><!-- End Section Title -->
-
-    <div class="container">
-
-      <div class="row gy-4">
-
-        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
-          <div class="service-item  position-relative">
-            <div class="icon">
-              <i class="bi bi-emoji-laughing-fill"></i>
-            </div>
-            <a href="service-details.html" class="stretched-link">
-              <h3>Massagem Relaxante</h3>
-            </a>
-            <p>Alivia o estresse, reduz a tensão muscular e promove bem-estar.</p>
+      <div class="col-lg-6 about-images" data-aos="fade-up" data-aos-delay="200">
+        <div class="row gy-4">
+          <div class="col-lg-6">
+            <img src="assets/img/about-company-1.jpg" class="img-fluid" alt="">
           </div>
-        </div><!-- End Service Item -->
-
-        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
-          <div class="service-item position-relative">
-            <div class="icon">
-              <i class="bi bi-clipboard2-heart-fill"></i>
-            </div>
-            <a href="service-details.html" class="stretched-link">
-              <h3>Massagem Terapêutica</h3>
-            </a>
-            <p>Ajuda em casos de dores crônicas, má postura ou esforço repetitivo.</p>
-          </div>
-        </div><!-- End Service Item -->
-
-        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
-          <div class="service-item position-relative">
-            <div class="icon">
-              <i class="bi bi-droplet-half"></i>
-            </div>
-            <a href="service-details.html" class="stretched-link">
-              <h3>Drenagem Linfática</h3>
-            </a>
-            <p>Estimula o sistema linfático, reduz inchaços e retenção de líquidos.</p>
-          </div>
-        </div><!-- End Service Item -->
-
-        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
-          <div class="service-item position-relative">
-            <div class="icon">
-              <i class="bi bi-hand-index-thumb"></i>
-            </div>
-            <a href="service-details.html" class="stretched-link">
-              <h3> Massagem Modeladora</h3>
-            </a>
-            <p>Visa ativar a circulação e ajudar na redução de medidas.</p>
-            <a href="service-details.html" class="stretched-link"></a>
-          </div>
-        </div><!-- End Service Item -->
-
-        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
-          <div class="service-item position-relative">
-            <div class="icon">
-              <i class="bi bi-feather"></i>
-            </div>
-            <a href="service-details.html" class="stretched-link">
-              <h3>Shiatsu</h3>
-            </a>
-            <p>Equilibra a energia vital e alivia dores.</p>
-            <a href="service-details.html" class="stretched-link"></a>
-          </div>
-        </div><!-- End Service Item -->
-
-        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="600">
-          <div class="service-item position-relative">
-            <div class="icon">
-              <i class="bi bi-fire"></i>
-            </div>
-            <a href="service-details.html" class="stretched-link">
-              <h3>Massagem com Pedras Quentes</h3>
-            </a>
-            <p>Pedras aquecidas usadas para relaxar músculos, aliviar tensões e aumentar o bem-estar.</p>
-            <a href="service-details.html" class="stretched-link"></a>
-          </div>
-        </div><!-- End Service Item -->
-
-      </div>
-
-    </div>
-
-  </section><!-- /Services Section -->
-
-  <!-- Features Section -->
-  <section id="features" class="features section light-background">
-
-    <!-- Section Title -->
-    <div class="container section-title" data-aos="fade-up">
-      <h2>Recursos</h2>
-      <div><span>Diferenciais</span> <span class="description-title"></span></div>
-    </div><!-- End Section Title -->
-
-    <div class="container">
-
-      <div class="row gy-5 justify-content-between">
-
-        <div class="col-xl-5" data-aos="zoom-out" data-aos-delay="100">
-          <img src="assets/img/services.jpg" class="img-fluid" alt="">
-        </div>
-
-        <div class="col-xl-6 d-flex">
-          <div class="row align-self-center gy-4">
-
-            <div class="col-md-6" data-aos="fade-up" data-aos-delay="200">
-              <div class="feature-box d-flex align-items-center">
-                <i class="bi bi-check"></i>
-                <h3>📱 Agendamento Online</h3>
+          <div class="col-lg-6">
+            <div class="row gy-4">
+              <div class="col-lg-12">
+                <img src="assets/img/about-company-2.jpg" class="img-fluid" alt="">
               </div>
-            </div><!-- End Feature Item -->
-
-            <div class="col-md-6" data-aos="fade-up" data-aos-delay="300">
-              <div class="feature-box d-flex align-items-center">
-                <i class="bi bi-check"></i>
-                <h3>🕰️ Atendimento com Hora Marcada</h3>
+              <div class="col-lg-12">
+                <img src="assets/img/about-company-3.jpg" class="img-fluid" alt="">
               </div>
-            </div><!-- End Feature Item -->
-
-            <div class="col-md-6" data-aos="fade-up" data-aos-delay="500">
-              <div class="feature-box d-flex align-items-center">
-                <i class="bi bi-check"></i>
-                <h3>🧘 Equilíbrio Corpo e Mente</h3>
-              </div>
-            </div><!-- End Feature Item -->
-
-            <div class="col-md-6" data-aos="fade-up" data-aos-delay="600">
-              <div class="feature-box d-flex align-items-center">
-                <i class="bi bi-check"></i>
-                <h3>🎓 Profissionais Qualificados</h3>
-              </div>
-            </div><!-- End Feature Item -->
-
-            <div class="col-md-6" data-aos="fade-up" data-aos-delay="700">
-              <div class="feature-box d-flex align-items-center">
-                <i class="bi bi-check"></i>
-                <h3>💆‍♂️ Variedade de Técnicas</h3>
-              </div>
-            </div><!-- End Feature Item -->
-
+            </div>
           </div>
         </div>
 
@@ -249,99 +129,324 @@
 
     </div>
 
-  </section><!-- /Features Section -->
+  </div>
+</section><!-- /About Section -->
 
-  <!-- Pricing Section -->
-  <section id="pricing" class="pricing section">
+<!-- Services Section -->
+<section id="services" class="services section">
 
-    <!-- Section Title -->
-    <div class="container section-title" data-aos="fade-up">
-      <h2>Preços</h2>
-      <div><span>Confira os </span> <span class="description-title">Preços</span></div>
+  <!-- Section Title -->
+  <div class="container section-title" data-aos="fade-up">
+    <h2>Serviços</h2>
+    <div><span>Veja nossos</span> <span class="description-title">Serviços</span></div>
+  </div><!-- End Section Title -->
+
+  <div class="container">
+
+    <div class="row gy-4">
+
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="service-item  position-relative">
+          <div class="icon">
+            <i class="bi bi-emoji-laughing-fill"></i>
+          </div>
+          <a href="service-details.html" class="stretched-link">
+            <h3>Massagem Relaxante</h3>
+          </a>
+          <p>Alivia o estresse, reduz a tensão muscular e promove bem-estar.</p>
+        </div>
+      </div><!-- End Service Item -->
+
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+        <div class="service-item position-relative">
+          <div class="icon">
+            <i class="bi bi-clipboard2-heart-fill"></i>
+          </div>
+          <a href="service-details.html" class="stretched-link">
+            <h3>Massagem Terapêutica</h3>
+          </a>
+          <p>Ajuda em casos de dores crônicas, má postura ou esforço repetitivo.</p>
+        </div>
+      </div><!-- End Service Item -->
+
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+        <div class="service-item position-relative">
+          <div class="icon">
+            <i class="bi bi-droplet-half"></i>
+          </div>
+          <a href="service-details.html" class="stretched-link">
+            <h3>Drenagem Linfática</h3>
+          </a>
+          <p>Estimula o sistema linfático, reduz inchaços e retenção de líquidos.</p>
+        </div>
+      </div><!-- End Service Item -->
+
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
+        <div class="service-item position-relative">
+          <div class="icon">
+            <i class="bi bi-hand-index-thumb"></i>
+          </div>
+          <a href="service-details.html" class="stretched-link">
+            <h3> Massagem Modeladora</h3>
+          </a>
+          <p>Visa ativar a circulação e ajudar na redução de medidas.</p>
+          <a href="service-details.html" class="stretched-link"></a>
+        </div>
+      </div><!-- End Service Item -->
+
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
+        <div class="service-item position-relative">
+          <div class="icon">
+            <i class="bi bi-feather"></i>
+          </div>
+          <a href="service-details.html" class="stretched-link">
+            <h3>Shiatsu</h3>
+          </a>
+          <p>Equilibra a energia vital e alivia dores.</p>
+          <a href="service-details.html" class="stretched-link"></a>
+        </div>
+      </div><!-- End Service Item -->
+
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="600">
+        <div class="service-item position-relative">
+          <div class="icon">
+            <i class="bi bi-fire"></i>
+          </div>
+          <a href="service-details.html" class="stretched-link">
+            <h3>Massagem com Pedras Quentes</h3>
+          </a>
+          <p>Pedras aquecidas usadas para relaxar músculos, aliviar tensões e aumentar o bem-estar.</p>
+          <a href="service-details.html" class="stretched-link"></a>
+        </div>
+      </div><!-- End Service Item -->
+
     </div>
-    <!-- End Section Title -->
 
-    <div class="container" data-aos="fade-up">
-        <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="400">
-          <div class="pricing-tem d-flex flex-column h-100">
-            <h3 style="color: #0d6efd;">Seção de 1 hora</h3>
-            <div class="price"><sup>R$</sup>120,00<span></span></div>
-            <div class="icon">
-              <i class="bi bi-cash-stack" style="color: #0d6efd;"></i>
+  </div>
+
+</section><!-- /Services Section -->
+
+<!-- Features Section -->
+<section id="features" class="features section light-background">
+
+  <!-- Section Title -->
+  <div class="container section-title" data-aos="fade-up">
+    <h2>Recursos</h2>
+    <div><span>Diferenciais</span> <span class="description-title"></span></div>
+  </div><!-- End Section Title -->
+
+  <div class="container">
+
+    <div class="row gy-5 justify-content-between">
+
+      <div class="col-xl-5" data-aos="zoom-out" data-aos-delay="100">
+        <img src="assets/img/services.jpg" class="img-fluid" alt="">
+      </div>
+
+      <div class="col-xl-6 d-flex">
+        <div class="row align-self-center gy-4">
+
+          <div class="col-md-6" data-aos="fade-up" data-aos-delay="200">
+            <div class="feature-box d-flex align-items-center">
+              <i class="bi bi-check"></i>
+              <h3>📱 Agendamento Online</h3>
             </div>
-            <ul class="flex-grow-1">
-              <li>Sessões completas de 1 hora para você relaxar profundamente, aliviar tensões e renovar suas energias.
-              </li>
-            </ul>
-            <a href="#contact" class="btn-buy mt-auto">Agende agora!</a>
-          </div>
-        </div>
-        <!-- End Pricing Item -->
-    </div>
+          </div><!-- End Feature Item -->
 
-  </section><!-- /Pricing Section -->
+          <div class="col-md-6" data-aos="fade-up" data-aos-delay="300">
+            <div class="feature-box d-flex align-items-center">
+              <i class="bi bi-check"></i>
+              <h3>🕰️ Atendimento com Hora Marcada</h3>
+            </div>
+          </div><!-- End Feature Item -->
 
-  <!-- Faq Section -->
-  <section id="faq" class="faq section light-background">
+          <div class="col-md-6" data-aos="fade-up" data-aos-delay="500">
+            <div class="feature-box d-flex align-items-center">
+              <i class="bi bi-check"></i>
+              <h3>🧘 Equilíbrio Corpo e Mente</h3>
+            </div>
+          </div><!-- End Feature Item -->
 
-    <div class="container">
+          <div class="col-md-6" data-aos="fade-up" data-aos-delay="600">
+            <div class="feature-box d-flex align-items-center">
+              <i class="bi bi-check"></i>
+              <h3>🎓 Profissionais Qualificados</h3>
+            </div>
+          </div><!-- End Feature Item -->
 
-      <div class="row gy-4">
-
-        <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
-          <div class="content px-xl-5">
-            <h3><span>Perguntas frequentes sobre a </span><strong>Massoterapia</strong></h3>
-            <p>
-
-            </p>
-          </div>
-        </div>
-
-        <div class="col-lg-8" data-aos="fade-up" data-aos-delay="200">
-
-          <div class="faq-container">
-            <div class="faq-item faq-active">
-              <h3><span class="num">1.</span> <span>O que é massoterapia?</span></h3>
-              <div class="faq-content">
-                <p>Massoterapia é um conjunto de técnicas de massagem que visam promover o bem-estar físico e mental,
-                  aliviando tensões, dores e estresse.</p>
-              </div>
-              <i class="faq-toggle bi bi-chevron-right"></i>
-            </div><!-- End Faq item-->
-
-            <div class="faq-item">
-              <h3><span class="num">2.</span> <span> Qual a diferença entre massagem relaxante e terapêutica?</span>
-              </h3>
-              <div class="faq-content">
-                <p>A relaxante tem foco no alívio do estresse e no relaxamento geral. Já a terapêutica é mais profunda
-                  e indicada para dores musculares, tensão crônica ou problemas posturais.</p>
-              </div>
-              <i class="faq-toggle bi bi-chevron-right"></i>
-            </div><!-- End Faq item-->
-
-            <div class="faq-item">
-              <h3><span class="num">3.</span> <span> Quantas sessões são recomendadas?</span></h3>
-              <div class="faq-content">
-                <p>Depende do objetivo. Para relaxamento, uma sessão ocasional pode bastar. Para dores crônicas ou
-                  tratamentos específicos, recomenda-se 1 a 2 sessões por semana.</p>
-              </div>
-              <i class="faq-toggle bi bi-chevron-right"></i>
-            </div><!-- End Faq item-->
-
-            <div class="faq-item">
-              <h3><span class="num">4.</span> <span> Massagem dói?</span></h3>
-              <div class="faq-content">
-                <p>A massagem relaxante não dói. Já a terapêutica pode causar algum desconforto em áreas tensas, mas
-                  sempre respeitando os limites do cliente.</p>
-              </div>
-              <i class="faq-toggle bi bi-chevron-right"></i>
-            </div><!-- End Faq item-->
-
-          </div>
+          <div class="col-md-6" data-aos="fade-up" data-aos-delay="700">
+            <div class="feature-box d-flex align-items-center">
+              <i class="bi bi-check"></i>
+              <h3>💆‍♂️ Variedade de Técnicas</h3>
+            </div>
+          </div><!-- End Feature Item -->
 
         </div>
       </div>
 
     </div>
 
-  </section><!-- /Faq Section -->
+  </div>
+
+</section><!-- /Features Section -->
+
+<!-- Pricing Section -->
+<section id="pricing" class="pricing section">
+
+  <!-- Section Title -->
+  <div class="container section-title" data-aos="fade-up">
+    <h2>Preços</h2>
+    <div><span>Confira os </span> <span class="description-title">Preços</span></div>
+  </div>
+  <!-- End Section Title -->
+
+  <div class="container" data-aos="fade-up">
+    <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="400">
+      <div class="pricing-tem d-flex flex-column h-100">
+        <h3 style="color: #0d6efd;">Seção de 1 hora</h3>
+        <div class="price"><sup>R$</sup>120,00<span></span></div>
+        <div class="icon">
+          <i class="bi bi-cash-stack" style="color: #0d6efd;"></i>
+        </div>
+        <ul class="flex-grow-1">
+          <li>Sessões completas de 1 hora para você relaxar profundamente, aliviar tensões e renovar suas energias.
+          </li>
+        </ul>
+        <a href="#contact" class="btn-buy mt-auto">Agende agora!</a>
+      </div>
+    </div>
+    <!-- End Pricing Item -->
+  </div>
+
+</section><!-- /Pricing Section -->
+
+<!-- Faq Section -->
+<section id="faq" class="faq section light-background">
+
+  <div class="container">
+
+    <div class="row gy-4">
+
+      <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+        <div class="content px-xl-5">
+          <h3><span>Perguntas frequentes sobre a </span><strong>Massoterapia</strong></h3>
+          <p>
+
+          </p>
+        </div>
+      </div>
+
+      <div class="col-lg-8" data-aos="fade-up" data-aos-delay="200">
+
+        <div class="faq-container">
+          <div class="faq-item faq-active">
+            <h3><span class="num">1.</span> <span>O que é massoterapia?</span></h3>
+            <div class="faq-content">
+              <p>Massoterapia é um conjunto de técnicas de massagem que visam promover o bem-estar físico e mental,
+                aliviando tensões, dores e estresse.</p>
+            </div>
+            <i class="faq-toggle bi bi-chevron-right"></i>
+          </div><!-- End Faq item-->
+
+          <div class="faq-item">
+            <h3><span class="num">2.</span> <span> Qual a diferença entre massagem relaxante e terapêutica?</span>
+            </h3>
+            <div class="faq-content">
+              <p>A relaxante tem foco no alívio do estresse e no relaxamento geral. Já a terapêutica é mais profunda
+                e indicada para dores musculares, tensão crônica ou problemas posturais.</p>
+            </div>
+            <i class="faq-toggle bi bi-chevron-right"></i>
+          </div><!-- End Faq item-->
+
+          <div class="faq-item">
+            <h3><span class="num">3.</span> <span> Quantas sessões são recomendadas?</span></h3>
+            <div class="faq-content">
+              <p>Depende do objetivo. Para relaxamento, uma sessão ocasional pode bastar. Para dores crônicas ou
+                tratamentos específicos, recomenda-se 1 a 2 sessões por semana.</p>
+            </div>
+            <i class="faq-toggle bi bi-chevron-right"></i>
+          </div><!-- End Faq item-->
+
+          <div class="faq-item">
+            <h3><span class="num">4.</span> <span> Massagem dói?</span></h3>
+            <div class="faq-content">
+              <p>A massagem relaxante não dói. Já a terapêutica pode causar algum desconforto em áreas tensas, mas
+                sempre respeitando os limites do cliente.</p>
+            </div>
+            <i class="faq-toggle bi bi-chevron-right"></i>
+          </div><!-- End Faq item-->
+
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+</section><!-- /Faq Section -->
+
+<script>
+  // abre/fecha modal (use seus próprios botões)
+  const modal = document.getElementById('agendamentoModal');
+  const fecharModal = document.querySelector('.fechar-modal');
+
+  function abrirModal() {
+    modal.style.display = 'block';
+    carregarProfissionais(); // carrega a lista toda vez que abre
+  }
+  fecharModal.onclick = () => modal.style.display = 'none';
+
+  // buscar profissionais no back-end
+  async function carregarProfissionais() {
+    try {
+      const resp = await fetch('/professionals/api'); // endpoint JSON
+      const profissionais = await resp.json();
+      const select = document.getElementById('profissional');
+      select.innerHTML = '<option value="">Selecione</option>';
+      profissionais.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.id; // ou p.nome
+        opt.textContent = p.nome; // ou `${p.nome} - ${p.especialidade}`
+        select.appendChild(opt);
+      });
+    } catch (err) {
+      console.error('Erro ao carregar profissionais', err);
+    }
+  }
+
+  // ação do botão Confirmar
+  document.getElementById('agendarBtn').addEventListener('click', () => {
+    const servico = document.getElementById('servico').value;
+    const profissional = document.getElementById('profissional').value;
+    const data = document.getElementById('data').value;
+    const hora = document.getElementById('hora').value;
+
+    if (!servico || !profissional || !data || !hora) {
+      alert('Preencha todos os campos!');
+      return;
+    }
+
+    // Exibir resumo (ou enviar via fetch POST)
+    const resumoDiv = document.getElementById('resumo');
+    resumoDiv.style.display = 'block';
+    resumoDiv.innerHTML = `
+    <p><strong>Serviço:</strong> ${servico}</p>
+    <p><strong>Profissional:</strong> ${profissional}</p>
+    <p><strong>Data:</strong> ${data}</p>
+    <p><strong>Horário:</strong> ${hora}</p>
+  `;
+
+    // Exemplo de POST para o back-end (descomente/adapte):
+
+    fetch('/agendamentos/save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ servico, profissionalId: profissional, data, hora })
+    })
+      .then(resp => {
+        if (resp.ok) alert('Agendamento salvo com sucesso!');
+        else alert('Erro ao salvar agendamento');
+      });
+
+  });
+</script>
