@@ -11,5 +11,5 @@ export class SidebarComponent {
     const target = event.target as HTMLElement;
     target.classList.toggle('filled');
   }
-
+  
 }
