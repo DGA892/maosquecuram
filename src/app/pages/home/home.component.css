@@ -1579,3 +1579,59 @@ section,
 /*--------------------------------------------------------------
 # Starter Section Section
 --------------------------------------------------------------*/
+
+/* ======= FADES sem AOS ======= */
+[data-fade] {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.fade-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ======= MODAL ======= */
+.agendamento-modal {
+  position: fixed;
+  z-index: 999;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.agendamento-content {
+  background: #fff;
+  border-radius: 12px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 400px;
+  position: relative;
+  animation: fadeIn 0.4s ease;
+}
+.fechar-modal {
+  position: absolute;
+  top: 10px; right: 15px;
+  cursor: pointer;
+  font-size: 22px;
+  color: #555;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+button {
+  margin-top: 1rem;
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+button:hover {
+  background: var(--accent-color);
+}
+

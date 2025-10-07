@@ -29,7 +29,7 @@ describe('HomeComponent', () => {
 
   // Aqui você pode adicionar mais testes específicos do componente,
   // como verificar se botões existem ou se eventos disparam corretamente
-
+  
   
 
 });

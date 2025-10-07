@@ -93,11 +93,15 @@
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/assets/vendor/bootstrap-icons/bootstrap-icons.css",
               "src/assets/vendor/boxicons/css/boxicons.min.css",
-              "src/styles.css"
+              "src/styles.css",
+              "node_modules/aos/dist/aos.css"
+
             ],
             "scripts": [
                 "src/assets/js/main.js",
-                "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
+                "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
+                "node_modules/aos/dist/aos.js"
+
             ]
           }
         }

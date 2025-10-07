@@ -1,50 +1,41 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<header>
+  <h1>Gerenciar Serviços</h1>
+</header>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Serviços - Admin Massoterapia</title>
-  <link rel="stylesheet" href="servicos.component.css" />
-</head>
+<div class="container">
+  <app-sidebar></app-sidebar>
 
-<body>
-  <header>
-    <h1>Gerenciar Serviços</h1>
-  </header>
+  <main class="content">
+    <h2>Lista de Serviços</h2>
 
-  <div class="container">
+    <div class="service-card" *ngFor="let servico of servicos">
+      <h3>{{ servico.nome }}</h3>
+      <p>{{ servico.descricao }}</p>
+      <button (click)="editar(servico)">Editar</button>
+      <button (click)="excluir(servico.id!)">Remover</button>
+    </div>
 
-    <app-sidebar> </app-sidebar>
+    <button class="add-btn" (click)="abrirModal()">Adicionar Novo Serviço</button>
 
+    <!-- Modal de Cadastro -->
+    <div class="modal" [style.display]="modalAberto ? 'block' : 'none'">
+  <div class="modal-content">
+    <span class="close" (click)="fecharModal()">&times;</span>
+    <h2>Adicionar Serviço</h2>
 
-    <main class="content">
-      <h2>Lista de Serviços</h2>
-
-      <div class="service-card">
-        <h3>Massagem Relaxante</h3>
-        <p>Massagem com óleos essenciais focada em relaxamento e bem-estar.</p>
-        <button>Editar</button>
-        <button>Remover</button>
+    <form #formServico="ngForm" (ngSubmit)="salvar()">
+      <div>
+        <label for="nome">Nome do Serviço</label>
+        <input id="nome" type="text" [(ngModel)]="novoServico.nome" name="nome" required>
       </div>
 
-      <div class="service-card">
-        <h3>Massagem Terapêutica</h3>
-        <p>Tratamento muscular direcionado para aliviar dores específicas.</p>
-        <button>Editar</button>
-        <button>Remover</button>
+      <div>
+        <label for="descricao">Descrição</label>
+        <textarea id="descricao" [(ngModel)]="novoServico.descricao" name="descricao" required></textarea>
       </div>
 
-      <div class="service-card">
-        <h3>Massagem com Pedras Quentes</h3>
-        <p>Uso de pedras aquecidas para promover relaxamento profundo.</p>
-        <button>Editar</button>
-        <button>Remover</button>
-      </div>
-
-      <button class="add-btn">Adicionar Novo Serviço</button>
-    </main>
+      <button type="submit" [disabled]="formServico.invalid">Salvar Serviço</button>
+    </form>
   </div>
-</body>
+</div>
 
-</html>
