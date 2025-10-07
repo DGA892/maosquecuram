@@ -3,7 +3,7 @@ package com.maosquecuram.crud.dto;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public record AppointmentDTO(
+public record AgendamentoDTO(
         Long id,
         String servico,
         String profissional,
