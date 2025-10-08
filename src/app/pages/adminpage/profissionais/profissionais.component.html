@@ -4,141 +4,103 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Profissionais - Admin Massoterapia</title>
-  <link rel="stylesheet" href="profissionais.component.css" />
-  <style>
-    .service-card img {
-      width: 100%;
-      height: 150px;
-      object-fit: cover;
-      margin-bottom: 10px;
-      border-radius: 5px;
-    }
-    .service-card button {
-      margin-right: 5px;
-      margin-top: 5px;
-    }
-
-    /* === Modal === */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 9999;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0, 0, 0, 0.5);
-    }
-    .modal-content {
-      background-color: #fff;
-      margin: 10% auto;
-      padding: 20px;
-      border-radius: 8px;
-      width: 400px;
-      max-width: 90%;
-    }
-    .close {
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .modal-content input {
-      width: 100%;
-      margin: 5px 0;
-      padding: 8px;
-    }
-    .modal-content button {
-      margin-top: 10px;
-    }
-  </style>
+  <link rel="stylesheet" href="profissionais.component.css" /> 
 </head>
+
 <body>
   <header>
     <h1>Gerenciar Profissionais</h1>
   </header>
 
   <div class="container">
-    
-     <app-sidebar> </app-sidebar>
-
+    <app-sidebar></app-sidebar>
 
     <main class="content">
-<main class="content">
-  <h2>Lista de Profissionais</h2>
-  <div id="profissionais-container">
-    <div class="service-card" th:each="p : ${professionals}">
-      <img src="https://via.placeholder.com/300x150" alt="Foto de [[${p.nome}]]"/>
-      <h3 th:text="${p.nome}"></h3>
-      <p><strong>Nome:</strong> <span th:text="${p.nome}"></span></p>
-      <p><strong>Email:</strong> <span th:text="${p.email}"></span></p>
-      <p><strong>CPF:</strong> <span th:text="${p.cpf}"></span></p>
-      <p><strong>Telefone:</strong> <span th:text="${p.numtel}"></span></p>
-      <button type="button"
-              onclick="abrirModal(this)"
-              th:attr="data-id=${p.id},
-                       data-nome=${p.nome},
-                       data-email=${p.email},
-                       data-cpf=${p.cpf},
-                       data-numtel=${p.numtel}">Editar</button>
-      <form th:action="@{/professionals/delete/{id}(id=${p.id})}" method="post" style="display:inline;">
-        <button type="submit" onclick="return confirm('Deseja realmente excluir este profissional?')">Excluir</button>
+      <h2>Lista de Profissionais</h2>
+
+      <div id="profissionais-container">
+        <div class="service-card" th:each="p : ${professionals}">
+          <img src="https://via.placeholder.com/300x150" alt="Foto de [[${p.nome}]]"/>
+          <h3 th:text="${p.nome}"></h3>
+          <p><strong>Email:</strong> <span th:text="${p.email}"></span></p>
+          <p><strong>CPF:</strong> <span th:text="${p.cpf}"></span></p>
+          <p><strong>Telefone:</strong> <span th:text="${p.numtel}"></span></p>
+
+          <div class="button-group">
+            <button type="button"
+                    class="edit-btn"
+                    onclick="abrirModalEditar(this)"
+                    th:attr="data-id=${p.id},
+                             data-nome=${p.nome},
+                             data-email=${p.email},
+                             data-cpf=${p.cpf},
+                             data-numtel=${p.numtel}">Editar</button>
+            <form th:action="@{/professionals/delete/{id}(id=${p.id})}" method="post" style="display:inline;">
+              <button type="submit" class="delete-btn" onclick="return confirm('Deseja realmente excluir este profissional?')">Excluir</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="add-container">
+        <button class="add-btn" onclick="abrirModalNovo()">+ Adicionar Novo Profissional</button>
+      </div>
+    </main>
+  </div>
+
+  <!-- === MODAL === -->
+  <div id="professionalModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="fecharModal()">&times;</span>
+      <h3 id="modalTitle">Adicionar Profissional</h3>
+
+      <form id="professionalForm" method="post">
+        <label for="nome">Nome</label>
+        <input type="text" id="nome" name="nome" required />
+
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required />
+
+        <label for="cpf">CPF</label>
+        <input type="text" id="cpf" name="cpf" required />
+
+        <label for="numtel">Telefone</label>
+        <input type="text" id="numtel" name="numtel" required />
+
+        <label for="senha">Senha</label>
+        <input type="password" id="senha" name="senha" required />
+
+        <button type="submit" class="save-btn">Salvar</button>
       </form>
     </div>
   </div>
-  <button type="button" class="add-btn" onclick="abrirModalNovo()">Adicionar Novo Profissional</button>
-</main>
 
-<!-- Modal de Edição -->
-<div id="editModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="fecharModal()">&times;</span>
-    <h3>Editar Profissional</h3>
-    <form id="editForm" method="post">
-      <input type="text" id="editNome" name="nome" placeholder="Nome" required>
-      <input type="email" id="editEmail" name="email" placeholder="Email" required>
-      <input type="text" id="editCpf" name="cpf" placeholder="CPF" required>
-      <input type="text" id="editNumtel" name="numtel" placeholder="Telefone" required>
-      <input type="password" id="editSenha" name="senha" placeholder="Senha" required>
-      <button type="submit">Salvar Alterações</button>
-    </form>
-  </div>
-</div>
-
-<script>
-  function abrirModalNovo() {
-    document.getElementById('editNome').value = '';
-    document.getElementById('editEmail').value = '';
-    document.getElementById('editCpf').value = '';
-    document.getElementById('editNumtel').value = '';
-    document.getElementById('editSenha').value = '';
-    document.getElementById('editForm').action = '/professionals/create';
-    document.getElementById('editModal').style.display = 'block';
-  }
-  function abrirModal(btn) {
-    document.getElementById('editNome').value = btn.getAttribute('data-nome') || '';
-    document.getElementById('editEmail').value = btn.getAttribute('data-email') || '';
-    document.getElementById('editCpf').value = btn.getAttribute('data-cpf') || '';
-    document.getElementById('editNumtel').value = btn.getAttribute('data-numtel') || '';
-    document.getElementById('editSenha').value = '';
-
-    const id = btn.getAttribute('data-id');
-    document.getElementById('editForm').action = '/professionals/update/' + id;
-    document.getElementById('editModal').style.display = 'block';
-  }
-
-  function fecharModal() {
-    document.getElementById('editModal').style.display = 'none';
-  }
-
-  window.onclick = function(event) {
-    if (event.target === document.getElementById('editModal')) {
-      fecharModal();
+  <script>
+    function abrirModalNovo() {
+      document.getElementById('modalTitle').textContent = 'Adicionar Profissional';
+      document.getElementById('professionalForm').action = '/professionals/create';
+      ['nome','email','cpf','numtel','senha'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('professionalModal').style.display = 'flex';
     }
-  }
-</script>
-    </main>
-  </div>
+
+    function abrirModalEditar(btn) {
+      document.getElementById('modalTitle').textContent = 'Editar Profissional';
+      document.getElementById('professionalForm').action = '/professionals/update/' + btn.getAttribute('data-id');
+      document.getElementById('nome').value = btn.getAttribute('data-nome');
+      document.getElementById('email').value = btn.getAttribute('data-email');
+      document.getElementById('cpf').value = btn.getAttribute('data-cpf');
+      document.getElementById('numtel').value = btn.getAttribute('data-numtel');
+      document.getElementById('senha').value = '';
+      document.getElementById('professionalModal').style.display = 'flex';
+    }
+
+    function fecharModal() {
+      document.getElementById('professionalModal').style.display = 'none';
+    }
+
+    window.onclick = function(e) {
+      if (e.target === document.getElementById('professionalModal')) fecharModal();
+    };
+  </script>
 </body>
 </html>
