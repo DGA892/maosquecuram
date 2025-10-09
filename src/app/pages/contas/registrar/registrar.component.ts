@@ -31,18 +31,18 @@ export class RegistrarComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.registrarForm.invalid) {
-      return;
-    }
+    if (this.registrarForm.invalid) return;
 
     const formData = this.registrarForm.value;
 
-    this.http.post<any>('/users/cadastrar', formData).subscribe({
+    this.http.post<any>('http://localhost:8080/users/cadastrar', formData).subscribe({
       next: (res) => {
         this.successMessage = res.sucesso || 'Conta criada com sucesso!';
         this.errorMessage = '';
         this.registrarForm.reset();
-        this.router.navigate(['/logar']); // redireciona para login
+
+        // opcional: redireciona após 2 segundos
+        setTimeout(() => this.router.navigate(['/logar']), 2000);
       },
       error: (err) => {
         this.errorMessage = err.error?.error || 'Erro ao registrar';

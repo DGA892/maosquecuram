@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Página de Registro - Mãos que Curam</title>
-<link href="./registrar.component.css" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Página de Registro - Mãos que Curam</title>
+	<link href="./registrar.component.css" rel="stylesheet">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -28,33 +29,37 @@
 
 			<form [formGroup]="registrarForm" (ngSubmit)="onSubmit()">
 
-      <div class="input-group">
-        <i class="fas fa-user icon"></i>
-        <input type="text" placeholder="Nome completo" formControlName="nome" required />
-      </div>
+				<div class="input-group">
+					<i class="fas fa-user icon"></i>
+					<input type="text" placeholder="Nome completo" formControlName="nome" required />
+				</div>
 
-      <div class="input-group">
-        <i class="fas fa-envelope icon"></i>
-        <input type="email" placeholder="E-mail" formControlName="email" required />
-      </div>
+				<div class="input-group">
+					<i class="fas fa-envelope icon"></i>
+					<input type="email" placeholder="E-mail" formControlName="email" required />
+				</div>
 
-      <div class="input-group">
-        <i class="fas fa-phone icon"></i>
-        <input type="tel" placeholder="(00)00000-0000" formControlName="numtel" id="telefone" maxlength="15" required />
-      </div>
+				<div class="input-group">
+					<i class="fas fa-phone icon"></i>
+					<input type="tel" placeholder="(00)00000-0000" formControlName="numtel" id="telefone" maxlength="15"
+						required />
+				</div>
 
-      <div class="input-group">
-        <i class="fas fa-calendar icon"></i>
-        <input type="date" formControlName="dataNascimento" required />
-      </div>
+				<div class="input-group">
+					<i class="fas fa-calendar icon"></i>
+					<input type="date" formControlName="dataNascimento" required />
+				</div>
 
-      <div class="input-group">
-        <i class="fas fa-lock icon"></i>
-        <input type="password" placeholder="Senha" formControlName="senha" required />
-      </div>
+				<div class="input-group">
+					<i class="fas fa-lock icon"></i>
+					<input type="password" placeholder="Senha" formControlName="senha" required />
+				</div>
 
-      <button type="submit" class="login-btn" [disabled]="registrarForm.invalid">Registrar</button>
-    </form>
+				<button type="submit" class="login-btn" [disabled]="registrarForm.invalid">Registrar</button>
+				<div *ngIf="successMessage" class="alert success">{{ successMessage }}</div>
+				<div *ngIf="errorMessage" class="alert error">{{ errorMessage }}</div>
+
+			</form>
 
 			<p class="register-link">
 				Já tem uma conta? <a [routerLink]="['/Logar']">Entre aqui</a>
@@ -66,7 +71,7 @@
 	<script>
 		const telefoneInput = document.getElementById('telefone');
 
-		telefoneInput.addEventListener('input', function(e) {
+		telefoneInput.addEventListener('input', function (e) {
 			let value = e.target.value.replace(/\D/g, ''); // Remove tudo que não é número
 
 			if (value.length > 11) {
