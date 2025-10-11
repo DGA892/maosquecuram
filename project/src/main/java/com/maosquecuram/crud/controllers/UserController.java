@@ -74,4 +74,14 @@ public class UserController {
        repository.deleteById(id);
         return ResponseEntity.ok().body(Map.of("sucesso", "Usuário deletado"));
    }  
+   
+   @GetMapping("/{id}")
+public ResponseEntity<?> getById(@PathVariable Long id) {
+    Optional<User> opt = repository.findById(id);
+    if (opt.isEmpty()) {
+        return ResponseEntity.badRequest().body(Map.of("error", "Usuário não encontrado"));
+    }
+    return ResponseEntity.ok(opt.get());
+}
+
 }
