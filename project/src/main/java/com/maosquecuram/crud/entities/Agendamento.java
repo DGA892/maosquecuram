@@ -65,7 +65,7 @@ public class Agendamento {
 	}
 
 	public void setUser(String user) {
-		user = user;
+		this.user = user;
 	}
 
 	public LocalDate getData() {

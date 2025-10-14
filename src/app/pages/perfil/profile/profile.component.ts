@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { UsuariosService } from '../../../services/usuarios.service';
 import { Usuario } from '../../../services/usuarios.service';
-import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-profile',
@@ -47,24 +46,5 @@ export class ProfileComponent implements OnInit {
 
   salvarAlteracoes(): void {
     const dadosAtualizados: Usuario = this.profileForm.value;
-
-    this.usuariosService.updateUsuario(this.userId, dadosAtualizados).subscribe({
-      next: () => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Perfil atualizado com sucesso!',
-          showConfirmButton: false,
-          timer: 1800
-        });
-      },
-      error: (err) => {
-        Swal.fire({
-          icon: 'error',
-          title: 'Erro ao atualizar perfil',
-          text: err.error?.message || 'Tente novamente mais tarde.'
-        });
-      }
-    });
   }
-
 }

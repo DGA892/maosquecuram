@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { UsuariosService } from '../../../services/usuarios.service';
 
 @Component({
   selector: 'app-registrar',
@@ -10,15 +11,38 @@ import { Router } from '@angular/router';
 })
 export class RegistrarComponent implements OnInit {
 
+  nome: string = '';
+  email: string = '';
+  numtel: string = '';
+  dataNascimento: string = '';
+  senha: string = '';
+  role: string = 'USER';
+
+  constructor(
+    private usuariosService: UsuariosService,
+    private router: Router,
+    private fb: FormBuilder,
+    private http: HttpClient,
+  ) {}
+
+  submitUser() {
+    const novoUsuario = {
+      nome: this.nome,
+      email: this.email,
+      numtel: this.numtel,
+      dataNascimento: this.dataNascimento,
+      senha: this.senha,
+      role: this.role
+    };
+  }
+
   registrarForm!: FormGroup;
   errorMessage: string = '';
   successMessage: string = '';
 
-  constructor(
-    private fb: FormBuilder,
-    private http: HttpClient,
-    private router: Router
-  ) {}
+  
+
+ 
 
   ngOnInit(): void {
     this.registrarForm = this.fb.group({

@@ -55,7 +55,7 @@
 					<input type="password" placeholder="Senha" formControlName="senha" required />
 				</div>
 
-				<button type="submit" class="login-btn" [disabled]="registrarForm.invalid">Registrar</button>
+				<button type="submit" class="login-btn" [disabled]="registrarForm.invalid" id="registrarBtn">Registrar</button>
 				<div *ngIf="successMessage" class="alert success">{{ successMessage }}</div>
 				<div *ngIf="errorMessage" class="alert error">{{ errorMessage }}</div>
 
@@ -90,6 +90,16 @@
 
 			e.target.value = value;
 		});
+
+		//  Novo script para confirmar criação e redirecionar
+		const registrarBtn = document.getElementById('registrarBtn');
+		if (registrarBtn) {
+			registrarBtn.addEventListener('click', function (e) {
+				e.preventDefault(); // evita envio imediato
+				alert('Conta criada com sucesso!');
+				window.location.href = '/logar'; // redireciona para a tela de login
+			});
+		}
 	</script>
 </body>
 
