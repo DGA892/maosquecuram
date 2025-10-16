@@ -20,6 +20,8 @@ export class UsuariosService {
 
   constructor(private http: HttpClient) {}
 
+  
+
   /** 🔹 Buscar todos os usuários (caso precise listar) */
   getAll(): Observable<Usuario[]> {
     return this.http.get<Usuario[]>(`${this.apiUrl}/buscar`);

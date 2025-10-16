@@ -12,6 +12,7 @@ export class LogarComponent implements OnInit {
 
   loginForm!: FormGroup;
   errorMessage: string = '';
+  successMessage: string = '';
 
   constructor(
     private fb: FormBuilder,
@@ -27,20 +28,24 @@ export class LogarComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.loginForm.invalid) {
-      return;
-    }
+    if (this.loginForm.invalid) return;
 
     const loginData = this.loginForm.value;
 
-    this.http.post<any>('/api/login', loginData).subscribe({
+    // URL do backend (ajuste se necessário)
+    this.http.post<any>('http://localhost:8080/users/login', loginData).subscribe({
       next: (res) => {
-        // Exemplo: salvar token ou dados do usuário no localStorage
-        localStorage.setItem('usuario', JSON.stringify(res.user));
-        this.router.navigate(['/profile']); // redireciona para perfil
+        // Exemplo: salvando informações básicas no localStorage
+        localStorage.setItem('usuario', JSON.stringify(res.usuario));
+        this.successMessage = res.sucesso || 'Login realizado com sucesso!';
+        this.errorMessage = '';
+
+        // redireciona após login bem-sucedido
+        setTimeout(() => this.router.navigate(['/profile']), 1500);
       },
       error: (err) => {
-        this.errorMessage = err.error?.error || 'Erro ao efetuar login';
+        this.errorMessage = err.error?.error || 'E-mail ou senha inválidos';
+        this.successMessage = '';
       }
     });
   }

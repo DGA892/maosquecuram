@@ -18,114 +18,118 @@
 
   <!-- ======= Header ======= -->
   <header id="header" class="header d-flex align-items-center">
-    <div class="container d-flex align-items-center justify-content-between">
-        <a [routerLink]="['/home']" class="logo d-flex align-items-center">
-        <img src="assets/img/logo.png" alt="Mãos que Curam">
-        <h1 class="sitename"><span>Mãos que Curam</span></h1>
-      </a>
-      <nav id="navbar" class="navbar">
-        <ul>
-          <li><a [routerLink]="['/home']">Início</a></li>
-          <li><a [routerLink]="['/appointments']">Meus Agendamentos</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header><!-- End Header -->
+  <div class="container d-flex align-items-center justify-content-between">
+    <a routerLink="/home" class="logo d-flex align-items-center">
+      <img src="assets/img/logo.png" alt="Mãos que Curam">
+      <h1 class="sitename"><span>Mãos que Curam</span></h1>
+    </a>
+    <nav id="navbar" class="navbar">
+      <ul>
+        <li><a routerLink="/home">Início</a></li>
+        <li><a routerLink="/appointments">Meus Agendamentos</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
 
-  <!-- ======= Perfil Section ======= -->
-  <main id="main">
-    <section id="profile" class="section">
-      <div class="container" data-aos="fade-up">
+<main id="main">
+  <section id="profile" class="section">
+    <div class="container" data-aos="fade-up">
 
-        <div class="section-header">
-          <h2>Gerenciar Perfil</h2>
-          <p>Altere suas informações pessoais</p>
-        </div>
+      <div class="section-header">
+        <h2>Gerenciar Perfil</h2>
+        <p>Altere suas informações pessoais</p>
+      </div>
 
-        <div class="row justify-content-center">
-          <div class="col-lg-8">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
 
-            <div class="profile-container">
-              <!-- Foto de perfil -->
-              <div>
-                <img src="assets/img/user-default.jpg" alt="Foto do Usuário" class="profile-pic" id="profileImage">
-                <input type="file" id="uploadPhoto" accept="image/*" hidden>
-                <button type="button" class="btn btn-outline-primary change-photo-btn" onclick="document.getElementById('uploadPhoto').click()">Alterar Foto</button>
-              </div>
+          <div class="profile-container" *ngIf="profileForm">
+            
+            <!-- Foto de perfil -->
+            <div>
+              <img [src]="usuario?.foto || 'assets/img/user-default.jpg'" alt="Foto do Usuário" class="profile-pic" id="profileImage">
+              <input type="file" id="uploadPhoto" accept="image/*" hidden (change)="onFileChange($event)">
+              <button type="button" class="btn btn-outline-primary change-photo-btn" (click)="triggerUpload()">Alterar Foto</button>
+            </div>
 
-              <!-- Campos do formulário -->
-              <div class="profile-fields">
-                <form id="profileForm" class="php-email-form">
+            <!-- Formulário -->
+            <div class="profile-fields">
+              <form [formGroup]="profileForm" (ngSubmit)="salvarAlteracoes()">
 
-                  <!-- Nome -->
-                  <div class="form-group mt-3 d-flex align-items-center">
-                    <div style="flex:1">
-                      <label for="nome">Nome</label>
-                      <input type="text" name="nome" class="form-control" id="nome" value="Douglas Ataide" readonly>
-                    </div>
-                    <button type="button" class="btn btn-secondary btn-edit" onclick="enableField('nome')">Editar</button>
+                <!-- Nome -->
+                <div class="form-group mt-3 d-flex align-items-center">
+                  <div style="flex:1">
+                    <label for="nome">Nome</label>
+                    <input type="text" formControlName="nome" class="form-control" id="nome" [readonly]="!profileForm.get('nome')?.enabled">
                   </div>
-
-                  <!-- Email -->
-                  <div class="form-group mt-3 d-flex align-items-center">
-                    <div style="flex:1">
-                      <label for="email">E-mail</label>
-                      <input type="email" class="form-control" name="email" id="email" value="douglas@email.com" readonly>
-                    </div>
-                    <button type="button" class="btn btn-secondary btn-edit" onclick="enableField('email')">Editar</button>
-                  </div>
-
-                  <!-- Senha -->
-                  <div class="form-group mt-3 d-flex align-items-center">
-                    <div style="flex:1">
-                      <label for="senha">Senha</label>
-                      <input type="password" class="form-control" name="senha" id="senha" placeholder="Nova senha" readonly>
-                    </div>
-                    <button type="button" class="btn btn-secondary btn-edit" onclick="enableField('senha')">Editar</button>
-                  </div>
-
-                  <!-- Telefone -->
-                  <div class="form-group mt-3 d-flex align-items-center">
-                    <div style="flex:1">
-                      <label for="telefone">Número de telefone</label>
-                      <input type="tel" class="form-control" name="telefone" id="telefone" value="(11) 91234-5678" readonly>
-                    </div>
-                    <button type="button" class="btn btn-secondary btn-edit" onclick="enableField('telefone')">Editar</button>
-                  </div>
-
-                  <!-- Data de nascimento (inalterável) -->
-                  <div class="form-group mt-3 d-flex align-items-center">
-                    <div style="flex:1">
-                    <label for="dataNascimento">Data de Nascimento</label>
-                    <input type="text" class="form-control" id="dataNascimento" value="15/08/1990" readonly>
-                  </div>
-                  <button type="button" class="btn btn-secondary btn-edit" onclick="enableField('dataNascimento')">Editar</button>
+                  <button type="button" class="btn btn-secondary btn-edit" (click)="toggleEdit('nome')">Editar</button>
                 </div>
 
-                  <!-- Botão Salvar -->
-                  <div class="text-center mt-4">
-                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                <!-- Email -->
+                <div class="form-group mt-3 d-flex align-items-center">
+                  <div style="flex:1">
+                    <label for="email">E-mail</label>
+                    <input type="email" formControlName="email" class="form-control" id="email" [readonly]="!profileForm.get('email')?.enabled">
                   </div>
+                  <button type="button" class="btn btn-secondary btn-edit" (click)="toggleEdit('email')">Editar</button>
+                </div>
 
-                </form>
-              </div>
-            </div> <!-- Fim profile-container -->
+                <!-- Senha -->
+                <div class="form-group mt-3 d-flex align-items-center">
+                  <div style="flex:1">
+                    <label for="senha">Senha</label>
+                    <input type="password" formControlName="senha" class="form-control" id="senha" placeholder="Nova senha" [readonly]="!profileForm.get('senha')?.enabled">
+                  </div>
+                  <button type="button" class="btn btn-secondary btn-edit" (click)="toggleEdit('senha')">Editar</button>
+                </div>
 
+                <!-- Telefone -->
+                <div class="form-group mt-3 d-flex align-items-center">
+                  <div style="flex:1">
+                    <label for="telefone">Número de telefone</label>
+                    <input type="tel" formControlName="telefone" class="form-control" id="telefone" [readonly]="!profileForm.get('telefone')?.enabled">
+                  </div>
+                  <button type="button" class="btn btn-secondary btn-edit" (click)="toggleEdit('telefone')">Editar</button>
+                </div>
+
+                <!-- Data de nascimento -->
+                <div class="form-group mt-3 d-flex align-items-center">
+                  <div style="flex:1">
+                    <label for="dataNascimento">Data de Nascimento</label>
+                    <input type="date" formControlName="dataNascimento" class="form-control" id="dataNascimento" [readonly]="!profileForm.get('dataNascimento')?.enabled">
+                  </div>
+                  <button type="button" class="btn btn-secondary btn-edit" (click)="toggleEdit('dataNascimento')">Editar</button>
+                </div>
+
+                <!-- Botão Salvar -->
+                <div class="text-center mt-4">
+                  <button type="submit" class="btn btn-primary" [disabled]="!profileForm.valid">Salvar Alterações</button>
+                </div>
+
+                <!-- Mensagens -->
+                <div *ngIf="successMessage" class="alert alert-success mt-3">{{ successMessage }}</div>
+                <div *ngIf="errorMessage" class="alert alert-danger mt-3">{{ errorMessage }}</div>
+
+              </form>
+            </div>
           </div>
+
         </div>
-
       </div>
-    </section>
-  </main><!-- End #main -->
 
-  <!-- ======= Footer ======= -->
-  <footer id="footer" class="footer">
-    <div class="container">
-      <div class="copyright">
-        &copy; 2025 <strong><span>Clínica de Massoterapia</span></strong>. Todos os direitos reservados.
-      </div>
     </div>
-  </footer><!-- End Footer -->
+  </section>
+</main>
+
+<footer id="footer" class="footer">
+  <div class="container">
+    <div class="copyright">
+      &copy; 2025 <strong><span>Clínica de Massoterapia</span></strong>. Todos os direitos reservados.
+    </div>
+  </div>
+</footer>
+
 
   <!-- Scripts -->
   <script src="assets/js/bootstrap.bundle.min.js"></script>
