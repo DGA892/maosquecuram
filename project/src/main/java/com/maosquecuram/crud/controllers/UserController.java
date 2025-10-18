@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.maosquecuram.crud.dto.CadastrarDTO;
+import com.maosquecuram.crud.dto.PerfilDTO;
 import com.maosquecuram.crud.dto.UserDTO;
 import com.maosquecuram.crud.entities.User;
 import com.maosquecuram.crud.repositories.UserRepository;
@@ -156,5 +157,17 @@ public class UserController {
             "usuario", usuario
         ));
     }
+    
+    @GetMapping("/perfil/{id}")
+    public ResponseEntity<PerfilDTO> buscarPerfil(@PathVariable Long id) {
+        Optional<User> userOpt = repository.findById(id);
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        User user = userOpt.get();
+        return ResponseEntity.ok(new PerfilDTO(user.getId(), user.getNome(), user.getEmail(), user.getNumtel()));
+    }
+
 
 }

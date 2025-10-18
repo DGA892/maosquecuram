@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ServicosComponent } from './servicos.component';
 import { SidebarModule } from '../admin/shared/sidebar/sidebar.module';
 import { FormsModule } from '@angular/forms';
+import { FooterModule } from 'src/app/shared/footer/footer.module';
 
 
 @NgModule({
@@ -11,7 +12,8 @@ import { FormsModule } from '@angular/forms';
   imports: [
     CommonModule,
     SidebarModule,
-    FormsModule
+    FormsModule,
+    FooterModule
   ],
   exports:[
     ServicosComponent

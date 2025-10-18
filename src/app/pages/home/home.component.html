@@ -150,7 +150,7 @@
           <div class="icon">
             <i class="bi bi-emoji-laughing-fill"></i>
           </div>
-          <a href="service-details.html" class="stretched-link">
+          <a href="" class="">
             <h3>Massagem Relaxante</h3>
           </a>
           <p>Alivia o estresse, reduz a tensão muscular e promove bem-estar.</p>
@@ -162,7 +162,7 @@
           <div class="icon">
             <i class="bi bi-clipboard2-heart-fill"></i>
           </div>
-          <a href="service-details.html" class="stretched-link">
+          <a href="" class="">
             <h3>Massagem Terapêutica</h3>
           </a>
           <p>Ajuda em casos de dores crônicas, má postura ou esforço repetitivo.</p>
@@ -174,7 +174,7 @@
           <div class="icon">
             <i class="bi bi-droplet-half"></i>
           </div>
-          <a href="service-details.html" class="stretched-link">
+          <a href="" class="">
             <h3>Drenagem Linfática</h3>
           </a>
           <p>Estimula o sistema linfático, reduz inchaços e retenção de líquidos.</p>
@@ -186,11 +186,11 @@
           <div class="icon">
             <i class="bi bi-hand-index-thumb"></i>
           </div>
-          <a href="service-details.html" class="stretched-link">
+          <a href="" class="">
             <h3> Massagem Modeladora</h3>
           </a>
           <p>Visa ativar a circulação e ajudar na redução de medidas.</p>
-          <a href="service-details.html" class="stretched-link"></a>
+          <a href="" class=""></a>
         </div>
       </div><!-- End Service Item -->
 
@@ -199,11 +199,11 @@
           <div class="icon">
             <i class="bi bi-feather"></i>
           </div>
-          <a href="service-details.html" class="stretched-link">
+          <a href="" class="">
             <h3>Shiatsu</h3>
           </a>
           <p>Equilibra a energia vital e alivia dores.</p>
-          <a href="service-details.html" class="stretched-link"></a>
+          <a href="" class=""></a>
         </div>
       </div><!-- End Service Item -->
 
@@ -212,11 +212,11 @@
           <div class="icon">
             <i class="bi bi-fire"></i>
           </div>
-          <a href="service-details.html" class="stretched-link">
+          <a href="" class="">
             <h3>Massagem com Pedras Quentes</h3>
           </a>
           <p>Pedras aquecidas usadas para relaxar músculos, aliviar tensões e aumentar o bem-estar.</p>
-          <a href="service-details.html" class="stretched-link"></a>
+          <a href="" class=""></a>
         </div>
       </div><!-- End Service Item -->
 
@@ -449,6 +449,22 @@
       });
 
   });
+
+  // Alternar visibilidade dos itens de FAQ
+  document.querySelectorAll('.faq-item').forEach(item => {
+    item.addEventListener('click', () => {
+      // Se já está ativo, remove
+      if (item.classList.contains('faq-active')) {
+        item.classList.remove('faq-active');
+      } else {
+        // Fecha todos os outros
+        document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('faq-active'));
+        // Abre o clicado
+        item.classList.add('faq-active');
+      }
+    });
+  });
+
 </script>
 
 <app-footer><app-footer>

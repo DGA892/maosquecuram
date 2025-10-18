@@ -4,6 +4,7 @@ import { AdminComponent } from './admin.component';
 import { AppRoutingModule } from "src/app/app-routing.module";
 import { SidebarComponent } from './shared/sidebar/sidebar.component';
 import { SidebarModule } from './shared/sidebar/sidebar.module';
+import { FooterModule } from "src/app/shared/footer/footer.module";
 
 
 
@@ -13,7 +14,8 @@ import { SidebarModule } from './shared/sidebar/sidebar.module';
   imports: [
     CommonModule,
     AppRoutingModule,
-    SidebarModule
+    SidebarModule,
+    FooterModule
 ],
   exports: [
     AdminComponent

@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProfissionaisComponent } from './profissionais.component';
 import { SidebarModule } from '../admin/shared/sidebar/sidebar.module';
+import { FooterModule } from 'src/app/shared/footer/footer.module';
 
 
 
@@ -11,6 +12,7 @@ import { SidebarModule } from '../admin/shared/sidebar/sidebar.module';
   imports: [
     CommonModule,
     SidebarModule,
+    FooterModule
   ],
   exports:[
     ProfissionaisComponent

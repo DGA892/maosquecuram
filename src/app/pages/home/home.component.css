@@ -1635,3 +1635,18 @@ button:hover {
   background: var(--accent-color);
 }
 
+.faq-content {
+  display: none;
+}
+
+.faq-active .faq-content {
+  display: block;
+}
+
+.faq-toggle {
+  transition: transform 0.3s ease;
+}
+
+.faq-active .faq-toggle {
+  transform: rotate(90deg);
+}

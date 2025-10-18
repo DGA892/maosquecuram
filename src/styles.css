@@ -1579,3 +1579,31 @@ section,
 /*--------------------------------------------------------------
 # Starter Section Section
 --------------------------------------------------------------*/
+a.btn.custom-btn {
+  background-color: #635c40 !important; /* força a cor de fundo */
+  color: white !important; /* força a cor do texto */
+  border: none !important; /* remove borda */
+  border-radius: 5px;
+}
+
+a.btn.custom-btn:hover {
+  background-color: #635c40 !important; 
+}
+
+.logo, .logo * {
+text-decoration: none !important; /* tira  sublinhado */
+
+}
+
+#main {
+background-color: #f8f1e5; /* cor bege do site */
+min-height: 100vh;
+padding-bottom: 0; 
+}
+
+html, body {
+  height: 100%;
+  background-color: #f8f1e5;
+  margin: 0;
+  padding: 0;
+}

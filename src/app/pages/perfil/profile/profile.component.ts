@@ -27,7 +27,8 @@ export class ProfileComponent implements OnInit {
       id: [{ value: '', disabled: true }],
       nome: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      telefone: [''],
+      senha: [''], // ➕ senha adicionada
+      numtel: [''], // ✅ renomeado de telefone para numtel, como no backend
       dataNascimento: [''],
       foto: ['']
     });
@@ -47,7 +48,12 @@ export class ProfileComponent implements OnInit {
     this.usuariosService.getUsuario(id).subscribe({
       next: (usuario) => {
         this.usuario = usuario;
-        this.profileForm.patchValue(usuario);
+
+        // Atualiza o formulário (sem senha)
+        this.profileForm.patchValue({
+          ...usuario,
+          senha: '' // campo deixado em branco
+        });
       },
       error: (err) => {
         console.error('Erro ao carregar usuário:', err);
@@ -63,17 +69,23 @@ export class ProfileComponent implements OnInit {
       return;
     }
 
+    const formData = this.profileForm.getRawValue();
+
     const dadosAtualizados: Usuario = {
       ...this.usuario,
-      ...this.profileForm.getRawValue()
+      ...formData
     };
+
+    // ⚠️ Não envia senha se o campo estiver vazio
+    if (!formData.senha) {
+      delete dadosAtualizados.senha;
+    }
 
     this.usuariosService.updateUsuario(this.usuario.id!, dadosAtualizados).subscribe({
       next: (res) => {
         this.successMessage = 'Perfil atualizado com sucesso!';
         this.errorMessage = '';
         this.usuario = res;
-        // Atualiza localStorage para refletir as mudanças
         localStorage.setItem('usuario', JSON.stringify(res));
       },
       error: (err) => {
@@ -84,30 +96,33 @@ export class ProfileComponent implements OnInit {
     });
   }
 
+  /** 🔹 Ao trocar a foto */
   onFileChange(event: any) {
-  const file = event.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e: any) => {
-      this.profileForm.patchValue({ foto: e.target.result });
-      if (this.usuario) this.usuario.foto = e.target.result;
-    };
-    reader.readAsDataURL(file);
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.profileForm.patchValue({ foto: e.target.result });
+        if (this.usuario) this.usuario.foto = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
   }
-}
 
-triggerUpload() {
-  const input = document.getElementById('uploadPhoto') as HTMLInputElement;
-  input?.click();
-}
-
-toggleEdit(field: string) {
-  const control = this.profileForm.get(field);
-  if (control?.disabled) {
-    control.enable();
-  } else {
-    control?.disable();
+  /** 🔹 Abrir seletor de foto */
+  triggerUpload() {
+    const input = document.getElementById('uploadPhoto') as HTMLInputElement;
+    input?.click();
   }
-}
+
+  /** 🔹 Habilitar/desabilitar campos */
+  toggleEdit(field: string) {
+    const control = this.profileForm.get(field);
+    if (control?.disabled) {
+      control.enable();
+    } else {
+      control?.disable();
+    }
+  }
 
 }
