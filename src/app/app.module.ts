@@ -23,12 +23,14 @@ import { AppointmentsModule } from './pages/perfil/appointments/appointments.mod
 import { FooterModule } from './shared/footer/footer.module';
 import { SharedModule } from './shared/shared.module';
 import { HomeComponent } from './pages/home/home.component';
+import { AgendamentoModule } from './pages/agendamento/agendamento.module';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
     HomeComponent,
+    
   ],
   imports: [
     BrowserModule,
@@ -46,6 +48,7 @@ import { HomeComponent } from './pages/home/home.component';
     ProfileModule,
     AppointmentsModule,
     FooterModule,
+    AgendamentoModule,
     AppRoutingModule // ← importa por último, contém todas as rotas
   ],
   bootstrap: [AppComponent]

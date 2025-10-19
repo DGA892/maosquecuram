@@ -11,6 +11,7 @@ import { ServicosComponent } from './pages/adminpage/servicos/servicos.component
 import { RegistrarComponent } from './pages/contas/registrar/registrar.component';
 import { LogarComponent } from './pages/contas/logar/logar.component';
 import { HomeComponent } from './pages/home/home.component';
+import { AgendamentoComponent } from './pages/agendamento/agendamento.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full'},
@@ -23,6 +24,7 @@ const routes: Routes = [
   { path: 'agenda', component: AgendaComponent },
   { path: 'profissionais', component: ProfissionaisComponent },
   { path: 'servicos', component: ServicosComponent },
+  {path: 'agendamento', component: AgendamentoComponent }
 ];
 
 @NgModule({

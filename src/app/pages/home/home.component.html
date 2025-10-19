@@ -39,48 +39,8 @@
             </li>
           </ul>
         </li>
-        <li><a (click)="abrirModal()">Agendar</a></li>
-
-        <!-- Modal de Agendamento -->
-        <div id="agendamentoModal" class="agendamento-modal" style="display:none;">
-          <div class="agendamento-content">
-            <span class="fechar-modal" (click)="fecharModal()">&times;</span>
-            <h2>Agendar Sessão</h2>
-
-            <label for="servico">Serviço</label>
-            <select id="servico">
-              <option value="">Selecione</option>
-              <option value="Massagem Relaxante">Massagem Relaxante</option>
-              <option value="Massagem Terapêutica">Massagem Terapêutica</option>
-              <option value="Drenagem Linfática">Drenagem Linfática</option>
-            </select>
-
-            <label for="profissional">Profissional</label>
-            <select id="profissional">
-              <option value="">Selecione</option>
-              <!-- opções vêm do back-end -->
-            </select>
-
-            <label for="data">Data</label>
-            <input type="date" id="data">
-
-            <label for="hora">Horário</label>
-            <select id="hora">
-              <option value="">Selecione</option>
-              <option value="08:00">08:00</option>
-              <option value="09:00">09:00</option>
-              <option value="10:00">10:00</option>
-              <option value="11:00">11:00</option>
-              <option value="12:00">12:00</option>
-            </select>
-
-            <button id="agendarBtn">Confirmar Agendamento</button>
-
-            <div id="resumo" class="resumo" style="display:none;"></div>
-          </div>
-        </div>
-      </ul>
-      <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+        <li><a [routerLink]="['/agendamento']">Agendar</a></li>
+      </ul>        
     </nav>
 
   </div>
