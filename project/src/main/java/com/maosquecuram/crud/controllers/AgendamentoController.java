@@ -6,111 +6,123 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.maosquecuram.crud.dto.AgendamentoDTO;
 import com.maosquecuram.crud.entities.Agendamento;
-import com.maosquecuram.crud.repositories.AgendamentoRepository;
+import com.maosquecuram.crud.services.AgendamentoService;
 
 @RestController
 @RequestMapping("/agendamentos")
+@CrossOrigin(origins = "http://localhost:4200") // permite acesso do Angular
 public class AgendamentoController {
 
     @Autowired
-    private AgendamentoRepository repository;
+    private AgendamentoService agendamentoService;
 
-    // LISTAR TODOS OS AGENDAMENTOS
+    /**
+     * 🧾 Listar todos os agendamentos
+     */
     @GetMapping
-    public List<AgendamentoDTO> listAll() {
-        return repository.findAll()
-                .stream()
-                .map(a -> new AgendamentoDTO(
-                        a.getId(),
-                        a.getServico(),
-                        a.getProfissional(),
-                        a.getUser(),
-                        a.getData(),
-                        a.getHora()
-                ))
-                .toList();
+    public ResponseEntity<List<Agendamento>> listarTodos() {
+        List<Agendamento> agendamentos = agendamentoService.listarTodos();
+        return ResponseEntity.ok(agendamentos);
     }
 
-    // BUSCAR AGENDAMENTO POR ID
+    /**
+     * 👤 Listar agendamentos de um usuário específico
+     */
+    @GetMapping("/usuario/{user}")
+    public ResponseEntity<?> listarPorUsuario(@PathVariable String user) {
+        List<Agendamento> agendamentos = agendamentoService.listarPorUsuario(user);
+
+        if (agendamentos.isEmpty()) {
+            return ResponseEntity.ok(Map.of("mensagem", "Nenhum agendamento encontrado para o usuário informado."));
+        }
+
+        return ResponseEntity.ok(agendamentos);
+    }
+
+    /**
+     * 🔍 Buscar agendamento por ID
+     */
     @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@PathVariable Long id) {
-        Optional<Agendamento> opt = repository.findById(id);
+    public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
+        Optional<Agendamento> opt = agendamentoService.buscarPorId(id);
+
         if (opt.isEmpty()) {
             return ResponseEntity.badRequest().body(Map.of("error", "Agendamento não encontrado"));
         }
+
         return ResponseEntity.ok(opt.get());
     }
 
-    // CRIAR NOVO AGENDAMENTO
+    /**
+     * 🗓️ Criar novo agendamento
+     */
     @PostMapping("/cadastrar")
-    public ResponseEntity<?> create(@RequestBody AgendamentoDTO dto) {
-        // Aqui você pode validar se o horário já está ocupado
-        boolean exists = repository.existsByProfissionalAndDataAndHora(dto.profissional(), dto.data(), dto.hora());
-        if (exists) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Horário já ocupado para esse profissional"));
-        }
-
-        Agendamento agendamento = new Agendamento(
+    public ResponseEntity<?> cadastrar(@RequestBody AgendamentoDTO dto) {
+        try {
+            Agendamento novo = new Agendamento(
                 dto.servico(),
                 dto.profissional(),
                 dto.user(),
                 dto.data(),
                 dto.hora()
-        );
-        repository.save(agendamento);
-        return ResponseEntity.ok(Map.of("sucesso", "Agendamento criado com sucesso"));
+            );
+
+            Agendamento salvo = agendamentoService.cadastrar(novo);
+            return ResponseEntity.ok(Map.of(
+                "sucesso", "Agendamento criado com sucesso",
+                "id", salvo.getId()
+            ));
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", "Erro interno ao criar agendamento."));
+        }
     }
 
-    // ATUALIZAR AGENDAMENTO
+    /**
+     * ✏️ Atualizar agendamento existente
+     */
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody AgendamentoDTO dto) {
-        Optional<Agendamento> optional = repository.findById(id);
-        if (optional.isEmpty()) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Agendamento não existe"));
-        }
+    public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody AgendamentoDTO dto) {
+        try {
+            Agendamento novoAgendamento = new Agendamento(
+                dto.servico(),
+                dto.profissional(),
+                dto.user(),
+                dto.data(),
+                dto.hora()
+            );
 
-        Agendamento agendamento = optional.get();
+            Agendamento atualizado = agendamentoService.atualizar(id, novoAgendamento);
+            return ResponseEntity.ok(Map.of(
+                "sucesso", "Agendamento atualizado com sucesso",
+                "id", atualizado.getId()
+            ));
 
-        if (dto.servico() != null && !dto.servico().isBlank()) {
-            agendamento.setServico(dto.servico());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", "Erro interno ao atualizar agendamento."));
         }
-        if (dto.data() != null) {
-            agendamento.setData(dto.data());
-        }
-        if (dto.hora() != null) {
-            agendamento.setHora(dto.hora());
-        }
-        if (dto.profissional() != null) {
-            agendamento.setProfissional(dto.profissional());
-        }
-        if (dto.user() != null) {
-            agendamento.setUser(dto.user());
-        }
-
-        repository.save(agendamento);
-        return ResponseEntity.ok(Map.of("sucesso", "Agendamento atualizado"));
     }
 
-    // EXCLUIR AGENDAMENTO
+    /**
+     *  Excluir agendamento
+     */
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
-        Optional<Agendamento> optional = repository.findById(id);
-        if (optional.isEmpty()) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Agendamento não existe"));
+    public ResponseEntity<?> deletar(@PathVariable Long id) {
+        try {
+            agendamentoService.deletar(id);
+            return ResponseEntity.ok(Map.of("sucesso", "Agendamento deletado com sucesso"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", "Erro interno ao deletar agendamento."));
         }
-
-        repository.deleteById(id);
-        return ResponseEntity.ok(Map.of("sucesso", "Agendamento deletado"));
     }
 }

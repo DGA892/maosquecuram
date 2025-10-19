@@ -1,16 +1,9 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Massoterapia</title>
-  <link rel="stylesheet" href="admin.component.css" />
-</head>
-<body>
+
   <header>
     <h1>Painel do Administrador</h1>
   </header>
  <app-sidebar> </app-sidebar>
- <app-footer></app-footer>
-</body>
-</html>
+  <main class="content">
+    <router-outlet></router-outlet>
+  </main>
+

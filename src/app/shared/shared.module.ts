@@ -8,7 +8,8 @@ import { FooterModule } from './footer/footer.module';
 
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    FooterModule
   ],
   exports: [
     FooterModule

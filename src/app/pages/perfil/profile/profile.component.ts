@@ -27,8 +27,8 @@ export class ProfileComponent implements OnInit {
       id: [{ value: '', disabled: true }],
       nome: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      senha: [''], // ➕ senha adicionada
-      numtel: [''], // ✅ renomeado de telefone para numtel, como no backend
+      senha: [''],
+      numtel: [''],
       dataNascimento: [''],
       foto: ['']
     });
@@ -43,16 +43,21 @@ export class ProfileComponent implements OnInit {
     }
   }
 
-  /** 🔹 Carrega o usuário pelo ID do localStorage */
+  /** 🔹 Carrega o usuário e formata a data de nascimento */
   carregarUsuario(id: number): void {
     this.usuariosService.getUsuario(id).subscribe({
       next: (usuario) => {
         this.usuario = usuario;
 
-        // Atualiza o formulário (sem senha)
+        // Formata data de nascimento como dd/MM/yyyy
+        const dataFormatada = usuario.dataNascimento
+          ? new Date(usuario.dataNascimento).toLocaleDateString('pt-BR')
+          : '';
+
         this.profileForm.patchValue({
           ...usuario,
-          senha: '' // campo deixado em branco
+          senha: '',
+          dataNascimento: dataFormatada
         });
       },
       error: (err) => {
@@ -62,7 +67,7 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  /** 🔹 Atualiza as informações do perfil */
+  /* Salva alterações e converte a data para ISO */
   salvarAlteracoes(): void {
     if (!this.usuario) {
       this.errorMessage = 'Usuário não encontrado.';
@@ -71,12 +76,16 @@ export class ProfileComponent implements OnInit {
 
     const formData = this.profileForm.getRawValue();
 
+    const dataNascimentoISO = formData.dataNascimento
+      ? new Date(formData.dataNascimento.split('/').reverse().join('-')).toISOString()
+      : null;
+
     const dadosAtualizados: Usuario = {
       ...this.usuario,
-      ...formData
+      ...formData,
+      dataNascimento: dataNascimentoISO || undefined
     };
 
-    // ⚠️ Não envia senha se o campo estiver vazio
     if (!formData.senha) {
       delete dadosAtualizados.senha;
     }
@@ -94,6 +103,17 @@ export class ProfileComponent implements OnInit {
         this.successMessage = '';
       }
     });
+  }
+
+  /** 🔹 Alterar senha via prompt */
+  alterarSenha() {
+    const novaSenha = prompt('Digite a nova senha:');
+    if (novaSenha !== null && novaSenha.trim() !== '') {
+      this.profileForm.patchValue({ senha: novaSenha });
+      this.salvarAlteracoes();
+      alert('Senha alterada com sucesso!');
+      this.profileForm.patchValue({ senha: '' });
+    }
   }
 
   /** 🔹 Ao trocar a foto */
@@ -123,6 +143,15 @@ export class ProfileComponent implements OnInit {
     } else {
       control?.disable();
     }
+  }
+
+  /** 🔹 Formata data de nascimento enquanto digita (dd/MM/yyyy) */
+  formatarDataNascimento(event: any) {
+    let value = event.target.value.replace(/\D/g, '');
+    if (value.length > 2) value = value.slice(0, 2) + '/' + value.slice(2);
+    if (value.length > 5) value = value.slice(0, 5) + '/' + value.slice(5, 9);
+    event.target.value = value;
+    this.profileForm.get('dataNascimento')?.setValue(value, { emitEvent: false });
   }
 
 }

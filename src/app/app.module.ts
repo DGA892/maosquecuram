@@ -25,6 +25,7 @@ import { SharedModule } from './shared/shared.module';
 import { HomeComponent } from './pages/home/home.component';
 import { AgendamentoModule } from './pages/agendamento/agendamento.module';
 
+
 @NgModule({
   declarations: [
     AppComponent,
