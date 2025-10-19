@@ -1,92 +1,84 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Agendar Sessão - Mãos que Curam</title>
-  <link href="./agendamento.component.css" rel="stylesheet" />
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
-</head>
-
-<body>
-  <div class="login-page">
-    <!-- Imagem de fundo -->
-    <div class="carousel-background">
-      <img src="assets/img/fundo1.png" class="active" />
-    </div>
-
-    <!-- Fundo desfocado -->
-    <div class="background"></div>
-
-    <!-- Card de agendamento -->
-    <div class="login-card">
-      <img src="assets/img/logo.png" alt="Logo" class="logo" />
-      <h1 class="title">Mãos que Curam</h1>
-      <p class="subtitle">Preencha os dados para agendar sua sessão</p>
-
-      <form [formGroup]="agendamentoForm" (ngSubmit)="onSubmit()">
-        <!-- Serviço -->
-        <div class="input-group">
-          <i class="fas fa-spa icon"></i>
-          <select formControlName="servico" required>
-            <option value="">Selecione o serviço</option>
-            <option *ngFor="let s of servicos" [value]="s">{{ s }}</option>
-          </select>
-        </div>
-
-        <!-- Profissional -->
-        <div class="input-group">
-          <i class="fas fa-user-tie icon"></i>
-          <select formControlName="profissional" required>
-            <option value="">Selecione o profissional</option>
-            <option *ngFor="let p of profissionais" [value]="p">{{ p }}</option>
-          </select>
-        </div>
-
-        <!-- Data -->
-        <div class="input-group">
-          <i class="fas fa-calendar-day icon"></i>
-          <input
-            type="date"
-            formControlName="data"
-            required
-            [min]="today"
-          />
-        </div>
-
-        <!-- 🔴 Mensagem quando selecionar domingo -->
-        <div
-          *ngIf="agendamentoForm.get('data')?.hasError('sundayNotAllowed')"
-          class="alert error"
-        >
-          Domingos estão indisponíveis para agendamento.
-        </div>
-
-        <!-- Horário -->
-        <div class="input-group">
-          <i class="fas fa-clock icon"></i>
-          <select formControlName="hora" required>
-            <option value="">Selecione o horário</option>
-            <option *ngFor="let hora of ['08:00', '09:00', '10:00', '11:00', '12:00']" [value]="hora">
-              {{ hora }}
-            </option>
-          </select>
-        </div>
-
-        <!-- Botão -->
-        <button type="submit" class="login-btn" [disabled]="agendamentoForm.invalid">
-          Confirmar Agendamento
-        </button>
-
-        <!-- Mensagens -->
-        <div *ngIf="successMessage" class="alert success">{{ successMessage }}</div>
-        <div *ngIf="errorMessage" class="alert error">{{ errorMessage }}</div>
-      </form>
-
-      <p class="register-link">
-        Deseja voltar? <a [routerLink]="['/home']">Ir para a página inicial</a>
-      </p>
-    </div>
+<div class="login-page">
+  <!-- Imagem de fundo -->
+  <div class="carousel-background">
+    <img src="assets/img/fundo1.png" class="active" />
   </div>
-</body>
-</html>
+
+  <!-- Fundo desfocado -->
+  <div class="background"></div>
+
+  <!-- Card de agendamento -->
+  <div class="login-card">
+    <img src="assets/img/logo.png" alt="Logo" class="logo" />
+    <h1 class="title">Mãos que Curam</h1>
+    <p class="subtitle">Preencha os dados para agendar sua sessão</p>
+
+    <!-- Formulário Angular -->
+    <form [formGroup]="agendamentoForm" (ngSubmit)="onSubmit()">
+      <!-- Serviço -->
+      <div class="input-group">
+        <i class="fas fa-spa icon"></i>
+        <select formControlName="servico">
+          <option value="">Selecione o serviço</option>
+          <option *ngFor="let s of servicos" [value]="s">{{ s }}</option>
+        </select>
+      </div>
+
+      <!-- Profissional -->
+      <div class="input-group">
+        <i class="fas fa-user-tie icon"></i>
+        <select formControlName="profissional">
+          <option value="">Selecione o profissional</option>
+          <option *ngFor="let p of profissionais" [value]="p">{{ p }}</option>
+        </select>
+      </div>
+
+      <!-- Data -->
+      <div class="input-group">
+        <i class="fas fa-calendar-day icon"></i>
+        <input
+          type="date"
+          formControlName="data"
+          [min]="today"
+          (change)="onDateChange($event)"
+        />
+      </div>
+
+      <!-- ⚠️ Mensagens de erro relacionadas à data -->
+      <div *ngIf="agendamentoForm.get('data')?.hasError('sundayNotAllowed')" class="alert error">
+        Domingos estão indisponíveis para agendamento.
+      </div>
+      <div *ngIf="agendamentoForm.get('data')?.hasError('pastDateNotAllowed')" class="alert error">
+        Não é possível escolher uma data anterior a hoje.
+      </div>
+
+      <!-- Horário -->
+      <div class="input-group">
+        <i class="fas fa-clock icon"></i>
+        <select formControlName="hora">
+          <option value="">Selecione o horário</option>
+          <option *ngFor="let hora of ['08:00', '09:00', '10:00', '11:00', '12:00']" [value]="hora">
+            {{ hora }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Botão -->
+      <button type="submit" class="login-btn" [disabled]="agendamentoForm.invalid">
+        Confirmar Agendamento
+      </button>
+
+      <!-- Mensagens -->
+      <div *ngIf="successMessage" class="alert success">{{ successMessage }}</div>
+      <div *ngIf="errorMessage && !agendamentoForm.get('data')?.hasError('sundayNotAllowed')" class="alert error">
+        {{ errorMessage }}
+      </div>
+    </form>
+
+    <!-- Voltar -->
+    <p class="register-link">
+      Deseja voltar?
+      <a routerLink="/home">Ir para a página inicial</a>
+    </p>
+  </div>
+</div>

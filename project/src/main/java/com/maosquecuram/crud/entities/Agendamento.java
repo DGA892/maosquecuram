@@ -1,9 +1,15 @@
 package com.maosquecuram.crud.entities;
 
-import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 
 @Entity
@@ -19,10 +25,12 @@ public class Agendamento {
     private String profissional;
 	@NotBlank(message = "Usuário é obrigatório")
     private String user;
-	@NotBlank(message = "Selecione uma Data")
-    private LocalDate data;
-	@NotBlank(message = "Selecione um Horário")
-    private LocalTime hora;
+	@NotNull(message = "Selecione uma Data")
+	private LocalDate data;
+
+	@NotNull(message = "Selecione um Horário")
+	private LocalTime hora;
+
 
     public Agendamento() {}
 
