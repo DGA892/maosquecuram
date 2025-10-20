@@ -67,7 +67,7 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  /* Salva alterações e converte a data para ISO */
+  /**  Salva alterações e converte a data para ISO */
   salvarAlteracoes(): void {
     if (!this.usuario) {
       this.errorMessage = 'Usuário não encontrado.';
