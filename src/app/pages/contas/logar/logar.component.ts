@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { AuthService, UsuarioLogado } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-logar',
@@ -11,12 +11,12 @@ import { Router } from '@angular/router';
 export class LogarComponent implements OnInit {
 
   loginForm!: FormGroup;
-  errorMessage: string = '';
-  successMessage: string = '';
+  errorMessage = '';
+  successMessage = '';
 
   constructor(
     private fb: FormBuilder,
-    private http: HttpClient,
+    private authService: AuthService,
     private router: Router
   ) {}
 
@@ -30,20 +30,18 @@ export class LogarComponent implements OnInit {
   onSubmit(): void {
     if (this.loginForm.invalid) return;
 
-    const loginData = this.loginForm.value;
+    const { email, senha } = this.loginForm.value;
 
-    // URL do backend (ajuste se necessário)
-    this.http.post<any>('http://localhost:8080/users/login', loginData).subscribe({
-      next: (res) => {
-        // Exemplo: salvando informações básicas no localStorage
-        localStorage.setItem('usuario', JSON.stringify(res.usuario));
-        this.successMessage = res.sucesso || 'Login realizado com sucesso!';
+    this.authService.login(email, senha).subscribe({
+      next: (usuario: UsuarioLogado) => {
+        this.successMessage = 'Login realizado com sucesso!';
         this.errorMessage = '';
 
-        // redireciona após login bem-sucedido
-        setTimeout(() => this.router.navigate(['/profile']), 1500);
+        // Redireciona após login
+        setTimeout(() => this.router.navigate(['/home']), 1000);
       },
       error: (err) => {
+        console.error(err);
         this.errorMessage = err.error?.error || 'E-mail ou senha inválidos';
         this.successMessage = '';
       }

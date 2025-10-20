@@ -2,87 +2,64 @@ package com.maosquecuram.crud.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import java.time.LocalDate;
+
 @Entity
 public class User {
-    
-	   @Id
-	   @GeneratedValue(strategy = GenerationType.IDENTITY)
-	   private Long id;
-	  
-	   @NotBlank(message = "Nome é obrigatório")
-	   private String nome;
-	  
-	   @NotBlank(message = "Email é obrigatório")
-	   @Column(unique = true)
-	   private String email;
-	  
-	   @NotBlank(message = "Número de telefone é obrigatório")
-	   @Column(unique = true)
-	   private String numtel;
-	   
-	   @NotBlank(message = "Senha é obrigatória")
-	   private String senha;
 
-	// Construtores
-	   public User() {}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	public User(String nome,String email, String numtel, String senha) {
-		this.nome = nome;
-		this.email = email;
-		this.numtel = numtel;
-		this.senha = senha;
-	}
+    @NotBlank(message = "Nome é obrigatório")
+    private String nome;
 
-	//getters and Setters
-	public Long getId() {
-		return id;
-	}
+    @NotBlank(message = "Email é obrigatório")
+    @Column(unique = true)
+    private String email;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    @NotBlank(message = "Número de telefone é obrigatório")
+    @Column(unique = true)
+    private String numtel;
 
-	public String getNome() {
-		return nome;
-	}
+    @NotBlank(message = "Senha é obrigatória")
+    private String senha;
 
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
+    @NotBlank
+    private String role = "CLIENTE"; // role padrão CLIENTE
 
-	public String getEmail() {
-		return email;
-	}
+    private LocalDate dataNascimento;
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public User() {}
 
-	public String getNumtel() {
-		return numtel;
-	}
+    public User(String nome, String email, String numtel, String senha, LocalDate dataNascimento) {
+        this.nome = nome;
+        this.email = email;
+        this.numtel = numtel;
+        this.senha = senha;
+        this.role = "CLIENTE"; // garante padrão
+        this.dataNascimento = dataNascimento;
+    }
 
-	public void setNumtel(String numtel) {
-		this.numtel = numtel;
-	}
+    // Getters e Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-	public String getSenha() {
-		return senha;
-	}
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
 
-	public void setSenha(String senha) {
-		this.senha = senha;
-	}
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-	public String getName() {
-		// TODO Auto-generated method stub
-		return nome;
-	}
+    public String getNumtel() { return numtel; }
+    public void setNumtel(String numtel) { this.numtel = numtel; }
 
-	public void setName(String nome) {
-		this.nome = nome;
-	}
-	
+    public String getSenha() { return senha; }
+    public void setSenha(String senha) { this.senha = senha; }
+
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
+
+    public LocalDate getDataNascimento() { return dataNascimento; }
+    public void setDataNascimento(LocalDate dataNascimento) { this.dataNascimento = dataNascimento; }
 }
-	   
-	   

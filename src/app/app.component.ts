@@ -1,87 +1,64 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit, OnInit } from '@angular/core';
+import { AuthService, UsuarioLogado } from './services/auth.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent implements OnInit, AfterViewInit {
   title = 'maosquecuram';
+  
+  // Observable do usuário logado
+  usuario$: Observable<UsuarioLogado | null>;
 
-  // Variáveis de controle de modal
-  isModalOpen = false;
+  // Campos individuais do usuário
+  usuarioId: number | null = null;
+  usuarioNome: string | null = null;
+  usuarioEmail: string | null = null;
+  usuarioNumtel: string | null = null;
+  usuarioRole: string | null = null;
 
-  constructor() {}
+  isDropdownOpen = false;
+
+  constructor(private authService: AuthService) {
+    this.usuario$ = this.authService.usuarioLogado$;
+  }
+
+  ngOnInit(): void {
+    // Atualiza campos individuais sempre que o usuário logado muda
+    this.usuario$.subscribe(user => {
+      if (user) {
+        this.usuarioId = user.id;
+        this.usuarioNome = user.nome;
+        this.usuarioEmail = user.email;
+        this.usuarioNumtel = user.numtel;
+        this.usuarioRole = user.role;
+      } else {
+        this.usuarioId = null;
+        this.usuarioNome = null;
+        this.usuarioEmail = null;
+        this.usuarioNumtel = null;
+        this.usuarioRole = null;
+      }
+    });
+  }
 
   ngAfterViewInit(): void {
-    // Carregar scripts externos (se necessário)
     const script = document.createElement('script');
     script.src = 'assets/js/main.js';
     script.async = true;
     document.body.appendChild(script);
   }
 
-  // Abre o modal de agendamento
-  abrirModal(): void {
-    this.isModalOpen = true;
-    this.carregarProfissionais();
+  logout() {
+    this.authService.logout();
+    this.isDropdownOpen = false;
   }
 
-  // Fecha o modal de agendamento
-  fecharModal(): void {
-    this.isModalOpen = false;
-  }
-
-  // Busca os profissionais do backend
-  async carregarProfissionais(): Promise<void> {
-    try {
-      const resp = await fetch('/professionals/api');
-      const profissionais = await resp.json();
-      // Aqui você pode popular uma variável no componente e usar *ngFor no template
-      console.log('Profissionais:', profissionais);
-    } catch (err) {
-      console.error('Erro ao carregar profissionais', err);
-    }
-  }
-
-  // Confirma agendamento
-  async confirmarAgendamento(servico: string, profissional: string, data: string, hora: string): Promise<void> {
-    if (!servico || !profissional || !data || !hora) {
-      alert('Preencha todos os campos!');
-      return;
-    }
-
-    try {
-      const resp = await fetch('/agendamentos/save', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({servico, profissional, data, hora})
-      });
-
-      if (resp.ok) {
-        alert('Agendamento salvo com sucesso!');
-        this.fecharModal();
-      } else {
-        alert('Erro ao salvar agendamento');
-      }
-    } catch (err) {
-      console.error('Erro ao salvar agendamento', err);
-    }
-  }
-
-  // Controle de exibição de links conforme login
-  async verificarUsuarioLogado(): Promise<void> {
-    try {
-      const resp = await fetch('/api/usuario-logado');
-      const user = await resp.json();
-
-      // Aqui você pode definir variáveis como:
-      // this.isCliente = user?.role === 'CLIENTE';
-      // this.isAdmin = user?.role === 'ADMIN';
-      // E depois usar *ngIf no template para exibir/ocultar links
-      console.log('Usuário logado:', user);
-    } catch (err) {
-      console.error('Erro ao verificar usuário logado', err);
-    }
+  toggleDropdown(event: Event) {
+    event.preventDefault();
+    this.isDropdownOpen = !this.isDropdownOpen;
   }
 }

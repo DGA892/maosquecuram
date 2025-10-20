@@ -67,40 +67,45 @@
 		</div>
 	</div>
 
-	<!-- SCRIPT para aplicar a máscara de telefone -->
-	<script>
-		const telefoneInput = document.getElementById('telefone');
+	<!-- SCRIPT para aplicar máscaras -->
+<script>
+  // Máscara de telefone (00)00000-0000
+  const telefoneInput = document.getElementById('telefone');
 
-		telefoneInput.addEventListener('input', function (e) {
-			let value = e.target.value.replace(/\D/g, ''); // Remove tudo que não é número
+  telefoneInput.addEventListener('input', function (e) {
+    let value = e.target.value.replace(/\D/g, ''); // Remove tudo que não é número
+    if (value.length > 11) value = value.slice(0, 11);
 
-			if (value.length > 11) {
-				value = value.slice(0, 11); // Limita a 11 dígitos
-			}
+    if (value.length > 0) value = value.replace(/^(\d{2})(\d)/g, '($1)$2');
+    if (value.length > 6) value = value.replace(/(\d{5})(\d{4})$/, '$1-$2');
+    else if (value.length > 2) value = value.replace(/(\d{4})(\d{0,4})$/, '$1-$2');
 
-			// Formata para (00)00000-0000
-			if (value.length > 0) {
-				value = value.replace(/^(\d{2})(\d)/g, '($1)$2');
-			}
-			if (value.length > 9) {
-				value = value.replace(/(\d{5})(\d{4})$/, '$1-$2');
-			} else if (value.length > 6) {
-				value = value.replace(/(\d{4})(\d{0,4})$/, '$1-$2');
-			}
+    e.target.value = value;
+  });
 
-			e.target.value = value;
-		});
+  // Máscara de data de nascimento dd/MM/yyyy
+  const dataInput = document.querySelector('input[formControlName="dataNascimento"]');
+  dataInput.addEventListener('input', function(e) {
+    let value = e.target.value.replace(/\D/g, ''); // Remove tudo que não é número
+    if (value.length > 8) value = value.slice(0, 8);
 
-		//  Novo script para confirmar criação e redirecionar
-		const registrarBtn = document.getElementById('registrarBtn');
-		if (registrarBtn) {
-			registrarBtn.addEventListener('click', function (e) {
-				e.preventDefault(); // evita envio imediato
-				alert('Conta criada com sucesso!');
-				window.location.href = '/logar'; // redireciona para a tela de login
-			});
-		}
-	</script>
+    if (value.length > 4) value = value.replace(/^(\d{2})(\d{2})(\d{0,4})$/, '$1/$2/$3');
+    else if (value.length > 2) value = value.replace(/^(\d{2})(\d{0,2})$/, '$1/$2');
+
+    e.target.value = value;
+  });
+
+  // Script para confirmar criação e redirecionar
+  const registrarBtn = document.getElementById('registrarBtn');
+  if (registrarBtn) {
+    registrarBtn.addEventListener('click', function (e) {
+      e.preventDefault(); // evita envio imediato
+      alert('Conta criada com sucesso!');
+      window.location.href = '/logar'; // redireciona para a tela de login
+    });
+  }
+</script>
+
 </body>
 
 </html>

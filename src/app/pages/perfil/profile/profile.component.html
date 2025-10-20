@@ -54,11 +54,7 @@
 
               <!-- Foto de perfil -->
               <div>
-                <img [src]="usuario?.foto || 'assets/img/user-default.jpg'" alt="Foto do Usuário" class="profile-pic"
-                  id="profileImage">
-                <input type="file" id="uploadPhoto" accept="image/*" hidden (change)="onFileChange($event)">
-                <button type="button" class="btn btn-outline-primary change-photo-btn" (click)="triggerUpload()">Alterar
-                  Foto</button>
+                <img src="assets\img\Portrait_Placeholder.png" alt="Profile picture" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
               </div>
 
               <!-- Formulário -->

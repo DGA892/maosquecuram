@@ -1,5 +1,10 @@
 package com.maosquecuram.crud.dto;
 
-public record CadastrarDTO(String nome, String email, String numtel, String senha) {
-
-}
+/** DTO usado para cadastro de usuários */
+public record CadastrarDTO(
+        String nome,
+        String email,
+        String numtel,
+        String senha,
+        String dataNascimento // novo campo opcional
+) {}

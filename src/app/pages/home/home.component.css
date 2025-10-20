@@ -1650,3 +1650,35 @@ button:hover {
 .faq-active .faq-toggle {
   transform: rotate(90deg);
 }
+
+.navmenu ul li.dropdown {
+  position: relative;
+}
+
+.navmenu ul li.dropdown ul {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  list-style: none;
+  padding: 0.5rem 0;
+  min-width: 150px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  z-index: 100;
+}
+
+.navmenu ul li.dropdown.open ul {
+  display: block;
+}
+
+.navmenu ul li.dropdown ul li a {
+  display: block;
+  padding: 0.5rem 1rem;
+  color: #333;
+  text-decoration: none;
+}
+
+.navmenu ul li.dropdown ul li a:hover {
+  background-color: #f0f0f0;
+}

@@ -1,5 +1,6 @@
 package com.maosquecuram.crud.controllers;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -7,15 +8,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.maosquecuram.crud.dto.CadastrarDTO;
 import com.maosquecuram.crud.dto.PerfilDTO;
@@ -27,7 +20,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/users")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class UserController {
 
     @Autowired
@@ -37,7 +30,13 @@ public class UserController {
     @GetMapping("/buscarTodos")
     public List<UserDTO> listarUsuarios() {
         return repository.findAll().stream()
-                .map(u -> new UserDTO(u.getNome(), u.getEmail(), u.getNumtel(), null))
+                .map(u -> new UserDTO(
+                        u.getNome(),
+                        u.getEmail(),
+                        u.getNumtel(),
+                        null,
+                        u.getDataNascimento() != null ? u.getDataNascimento().toString() : null
+                ))
                 .toList();
     }
 
@@ -52,15 +51,19 @@ public class UserController {
                 return ResponseEntity.badRequest().body(Map.of("error", "Email ou número de telefone em uso"));
             }
 
-            // Criação simples do usuário (sem criptografia)
+            LocalDate dataNasc = user.dataNascimento() != null && !user.dataNascimento().isEmpty()
+                    ? LocalDate.parse(user.dataNascimento())
+                    : null;
+
             User novoUser = new User(
                     user.nome(),
                     user.email(),
                     user.numtel(),
-                    user.senha()
+                    user.senha(),
+                    dataNasc
             );
-
             repository.save(novoUser);
+
             return ResponseEntity.ok(Map.of("sucesso", "Usuário cadastrado com sucesso!"));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -68,96 +71,59 @@ public class UserController {
         }
     }
 
-    // 🔹 ATUALIZAR USUÁRIO
-    @PutMapping("/atualizar/{id}")
-    public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody CadastrarDTO usuario) {
-        try {
-            Optional<User> optionalUser = repository.findById(id);
-            if (optionalUser.isEmpty()) {
-                return ResponseEntity.badRequest().body(Map.of("error", "Usuário não encontrado"));
-            }
-
-            User user = optionalUser.get();
-
-            if (usuario.email() != null && !usuario.email().isBlank()) {
-                user.setEmail(usuario.email());
-            }
-            if (usuario.nome() != null && !usuario.nome().isBlank()) {
-                user.setNome(usuario.nome());
-            }
-            if (usuario.numtel() != null && !usuario.numtel().isBlank()) {
-                user.setNumtel(usuario.numtel());
-            }
-
-            repository.save(user);
-            return ResponseEntity.ok(Map.of("sucesso", "Dados do usuário atualizados com sucesso!"));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "Erro ao atualizar usuário: " + e.getMessage()));
-        }
-    }
-
-    // 🔹 DELETAR USUÁRIO
-    @DeleteMapping("/deletar/{id}")
-    public ResponseEntity<?> deletar(@PathVariable Long id) {
-        try {
-            Optional<User> optionalUser = repository.findById(id);
-            if (optionalUser.isEmpty()) {
-                return ResponseEntity.badRequest().body(Map.of("error", "Usuário não encontrado"));
-            }
-
-            repository.deleteById(id);
-            return ResponseEntity.ok(Map.of("sucesso", "Usuário deletado com sucesso!"));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "Erro ao deletar usuário: " + e.getMessage()));
-        }
-    }
-
-    // 🔹 BUSCAR USUÁRIO POR ID
-    @GetMapping("/{id}")
-    public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
-        Optional<User> opt = repository.findById(id);
-        if (opt.isEmpty()) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Usuário não encontrado"));
-        }
-        return ResponseEntity.ok(opt.get());
-    }
-    
+    // 🔹 LOGIN
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody Map<String, String> loginData) {
         String email = loginData.get("email");
         String senha = loginData.get("senha");
 
         Optional<User> optionalUser = repository.findByEmail(email);
-
         if (optionalUser.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "Usuário não encontrado"));
         }
 
         User user = optionalUser.get();
-
-        // Comparação direta, já que não usa bcrypt
         if (!user.getSenha().equals(senha)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "Senha incorreta"));
         }
 
-        // Monta resposta com dados do usuário (sem senha)
         Map<String, Object> usuario = Map.of(
-            "id", user.getId(),
-            "nome", user.getNome(),
-            "email", user.getEmail(),
-            "numtel", user.getNumtel()
+                "id", user.getId(),
+                "nome", user.getNome(),
+                "email", user.getEmail(),
+                "numtel", user.getNumtel(),
+                "role", user.getRole(),
+                "dataNascimento", user.getDataNascimento() != null ? user.getDataNascimento().toString() : null
         );
 
-        return ResponseEntity.ok(Map.of(
-            "sucesso", "Login realizado com sucesso!",
-            "usuario", usuario
-        ));
+        return ResponseEntity.ok(Map.of("usuario", usuario));
     }
-    
+
+    // 🔹 RETORNAR USUÁRIO LOGADO POR ID
+    @GetMapping("/usuario-logado")
+    public ResponseEntity<Map<String, Object>> usuarioLogado(@RequestParam Long id) {
+        Optional<User> optUser = repository.findById(id);
+        if (optUser.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "Usuário não encontrado"));
+        }
+
+        User user = optUser.get();
+        Map<String, Object> usuario = Map.of(
+                "id", user.getId(),
+                "nome", user.getNome(),
+                "email", user.getEmail(),
+                "numtel", user.getNumtel(),
+                "role", user.getRole(),
+                "dataNascimento", user.getDataNascimento() != null ? user.getDataNascimento().toString() : null
+        );
+
+        return ResponseEntity.ok(Map.of("usuario", usuario));
+    }
+
+    // 🔹 BUSCAR PERFIL
     @GetMapping("/perfil/{id}")
     public ResponseEntity<PerfilDTO> buscarPerfil(@PathVariable Long id) {
         Optional<User> userOpt = repository.findById(id);
@@ -166,8 +132,12 @@ public class UserController {
         }
 
         User user = userOpt.get();
-        return ResponseEntity.ok(new PerfilDTO(user.getId(), user.getNome(), user.getEmail(), user.getNumtel()));
+        return ResponseEntity.ok(new PerfilDTO(
+                user.getId(),
+                user.getNome(),
+                user.getEmail(),
+                user.getNumtel(),
+                user.getDataNascimento() != null ? user.getDataNascimento().toString() : null
+        ));
     }
-
-
 }

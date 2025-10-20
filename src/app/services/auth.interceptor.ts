@@ -14,34 +14,21 @@ export class AuthInterceptor implements HttpInterceptor {
   constructor(private router: Router) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // Obtém o token salvo (ex: no localStorage)
-    const token = localStorage.getItem('token');
-
-    let authReq = req;
-
-    // Se houver token, adiciona o cabeçalho Authorization
-    if (token) {
-      authReq = req.clone({
-        setHeaders: {
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true, // importante para manter cookies e sessões
-      });
-    } else {
-      authReq = req.clone({ withCredentials: true });
-    }
+    // Clona a requisição adicionando withCredentials para manter sessão/cookies
+    const authReq = req.clone({ withCredentials: true });
 
     return next.handle(authReq).pipe(
       catchError((error: HttpErrorResponse) => {
-        // Trata erros de autenticação
+        // Se receber 401, redireciona para login
         if (error.status === 401) {
-          console.warn('Sessão expirada. Redirecionando para login...');
-          localStorage.removeItem('token');
+          console.warn('Sessão expirada ou usuário não autenticado. Redirecionando...');
+          localStorage.removeItem('usuarioLogado'); // limpa estado local
           this.router.navigate(['/logar']);
         }
 
+        // Tratar 403 caso queira alertar usuário
         if (error.status === 403) {
-          console.error('Acesso negado: você não tem permissão.');
+          console.error('Acesso negado: você não tem permissão para acessar este recurso.');
         }
 
         return throwError(() => error);
