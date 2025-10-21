@@ -1,28 +1,51 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthLocalService } from 'src/app/services/auth-local.service';
+import { AuthService, UsuarioLogado } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-logar',
   templateUrl: './logar.component.html',
   styleUrls: ['./logar.component.css']
 })
-export class LogarComponent {
-  email = '';
-  senha = '';
+export class LogarComponent implements OnInit {
+
+  loginForm!: FormGroup;
   errorMessage = '';
+  successMessage = '';
 
-  constructor(private authLocal: AuthLocalService, private router: Router) {}
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
-  login() {
-    const sucesso = this.authLocal.login(this.email, this.senha);
+  ngOnInit(): void {
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      senha: ['', [Validators.required, Validators.minLength(4)]]
+    });
+  }
 
-    if (sucesso) {
-      this.errorMessage = '';
-      alert('Login realizado com sucesso!');
-      this.router.navigate(['/profile']); // redireciona para perfil
-    } else {
-      this.errorMessage = 'E-mail ou senha inválidos.';
-    }
+  onSubmit(): void {
+    if (this.loginForm.invalid) return;
+
+    const { email, senha } = this.loginForm.value;
+
+    this.authService.login(email, senha).subscribe({
+      next: (usuario: UsuarioLogado) => {
+        this.successMessage = 'Login realizado com sucesso!';
+        this.errorMessage = '';
+
+        // Redireciona após login
+        setTimeout(() => this.router.navigate(['/home']), 1000);
+      },
+      error: (err) => {
+        console.error(err);
+        this.errorMessage = err.error?.error || 'E-mail ou senha inválidos';
+        this.successMessage = '';
+      }
+    });
   }
 }
+
