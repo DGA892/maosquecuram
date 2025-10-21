@@ -27,24 +27,44 @@
       <h1 class="title">Mãos que Curam</h1>
       <p class="subtitle">Bem-vindo de volta! Faça login para continuar</p>
 
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <!-- 🔹 Login Local -->
+      <form (ngSubmit)="login()" #loginForm="ngForm">
         <div class="input-group">
           <i class="fas fa-envelope icon"></i>
-          <input type="email" placeholder="E-mail" formControlName="email" required>
+          <input
+            type="email"
+            placeholder="E-mail"
+            name="email"
+            [(ngModel)]="email"
+            #emailModel="ngModel"
+            required
+          >
         </div>
 
         <div class="input-group">
           <i class="fas fa-lock icon"></i>
-          <input type="password" placeholder="Senha" formControlName="senha" required>
+          <input
+            type="password"
+            placeholder="Senha"
+            name="senha"
+            [(ngModel)]="senha"
+            #senhaModel="ngModel"
+            required
+          >
         </div>
 
-        <button type="submit" class="login-btn" [disabled]="loginForm.invalid">Entrar</button>
+        <button type="submit" class="login-btn" [disabled]="!loginForm.valid">
+          Entrar
+        </button>
       </form>
 
+      <!-- Mensagem de erro -->
       <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
 
+      <!-- Link de registro -->
       <p class="register-link">
-        Ainda não tem uma conta? <a [routerLink]="['/registrar']">Registre-se aqui</a>
+        Ainda não tem uma conta?
+        <a [routerLink]="['/registrar']">Registre-se aqui</a>
       </p>
     </div>
   </div>
