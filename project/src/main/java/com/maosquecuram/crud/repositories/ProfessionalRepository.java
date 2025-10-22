@@ -1,11 +1,9 @@
 package com.maosquecuram.crud.repositories;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.maosquecuram.crud.dto.FuncionarioDTO;
 import com.maosquecuram.crud.entities.Professional;
 
 

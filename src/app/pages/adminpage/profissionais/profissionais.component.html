@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Profissionais - Admin Massoterapia</title>
-  <link rel="stylesheet" href="profissionais.component.css" /> 
+  <link rel="stylesheet" href="profissionais.component.css" />
 </head>
 
 <body>
@@ -19,68 +20,59 @@
       <h2>Lista de Profissionais</h2>
 
       <div id="profissionais-container">
-        <div class="service-card" th:each="p : ${professionals}">
-          <img src="https://via.placeholder.com/300x150" alt="Foto de [[${p.nome}]]"/>
-          <h3 th:text="${p.nome}"></h3>
-          <p><strong>Email:</strong> <span th:text="${p.email}"></span></p>
-          <p><strong>CPF:</strong> <span th:text="${p.cpf}"></span></p>
-          <p><strong>Telefone:</strong> <span th:text="${p.numtel}"></span></p>
+        <div *ngFor="let p of profissionais" class="service-card">
+          <img src="assets\img\Portrait_Placeholder.png" alt="Foto de {{ p.nome }}" />
+          <h3>{{ p.nome }}</h3>
+          <p><strong>Email:</strong> {{ p.email }}</p>
+          <p><strong>CPF:</strong> {{ p.cpf }}</p>
+          <p><strong>Telefone:</strong> {{ p.numtel }}</p>
 
           <div class="button-group">
-            <button type="button"
-                    class="edit-btn"
-                    onclick="abrirModalEditar(this)"
-                    th:attr="data-id=${p.id},
-                             data-nome=${p.nome},
-                             data-email=${p.email},
-                             data-cpf=${p.cpf},
-                             data-numtel=${p.numtel}">Editar</button>
-            <form th:action="@{/professionals/delete/{id}(id=${p.id})}" method="post" style="display:inline;">
-              <button type="submit" class="delete-btn" onclick="return confirm('Deseja realmente excluir este profissional?')">Excluir</button>
-            </form>
+            <button class="edit-btn" (click)="abrirModalEditar(p)">Editar</button>
+            <button class="delete-btn" (click)="excluirProfissional(p.id)">Excluir</button>
           </div>
         </div>
       </div>
 
       <div class="add-container">
-        <button class="add-btn" onclick="abrirModalNovo()">+ Adicionar Novo Profissional</button>
+        <button class="add-btn" (click)="abrirModalNovo()">+ Adicionar Novo Profissional</button>
       </div>
     </main>
   </div>
 
   <!-- === MODAL === -->
-  <div id="professionalModal" class="modal">
+  <div *ngIf="modalAberto" class="modal" (click)="fecharModalFora($event)">
     <div class="modal-content">
-      <span class="close" onclick="fecharModal()">&times;</span>
-      <h3 id="modalTitle">Adicionar Profissional</h3>
+      <span class="close" (click)="fecharModal()">&times;</span>
+      <h3>{{ editando ? 'Editar Profissional' : 'Adicionar Profissional' }}</h3>
 
-      <form id="professionalForm" method="post">
-        <label for="nome">Nome</label>
-        <input type="text" id="nome" name="nome" required />
+      <form (ngSubmit)="salvarProfissional()">
+        <label>Nome</label>
+        <input type="text" [(ngModel)]="profissionalSelecionado.nome" name="nome" required />
 
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" required />
+        <label>Email</label>
+        <input type="email" [(ngModel)]="profissionalSelecionado.email" name="email" required />
 
-        <label for="cpf">CPF</label>
-        <input type="text" id="cpf" name="cpf" required />
+        <label>CPF</label>
+        <input type="text" [(ngModel)]="profissionalSelecionado.cpf" name="cpf" required />
 
-        <label for="numtel">Telefone</label>
-        <input type="text" id="numtel" name="numtel" required />
+        <label>Telefone</label>
+        <input type="text" [(ngModel)]="profissionalSelecionado.numtel" name="numtel" required />
 
-        <label for="senha">Senha</label>
-        <input type="password" id="senha" name="senha" required />
+        <label>Senha</label>
+        <input type="password" [(ngModel)]="profissionalSelecionado.senha" name="senha" required />
 
         <button type="submit" class="save-btn">Salvar</button>
       </form>
     </div>
   </div>
 
-  
+
   <script>
     function abrirModalNovo() {
       document.getElementById('modalTitle').textContent = 'Adicionar Profissional';
       document.getElementById('professionalForm').action = '/professionals/create';
-      ['nome','email','cpf','numtel','senha'].forEach(id => document.getElementById(id).value = '');
+      ['nome', 'email', 'cpf', 'numtel', 'senha'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('professionalModal').style.display = 'flex';
     }
 
@@ -99,9 +91,10 @@
       document.getElementById('professionalModal').style.display = 'none';
     }
 
-    window.onclick = function(e) {
+    window.onclick = function (e) {
       if (e.target === document.getElementById('professionalModal')) fecharModal();
     };
   </script>
 </body>
+
 </html>

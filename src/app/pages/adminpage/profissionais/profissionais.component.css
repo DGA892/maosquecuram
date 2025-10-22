@@ -480,3 +480,128 @@ button[type="submit"] {
 button[type="submit"]:hover {
   background-color: var(--accent-color);
 }
+
+.container {
+  display: flex;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+}
+
+.service-card {
+  background: #f4f4f4;
+  border-radius: 8px;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+}
+
+.add-container {
+  margin-top: 20px;
+}
+
+.modal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  display: flex; justify-content: center; align-items: center;
+  background: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  width: 400px;
+  position: relative;
+}
+
+.close {
+  position: absolute;
+  top: 10px; right: 15px;
+  cursor: pointer;
+}
+
+.add-btn {
+  background-color: var(--accent-color); /* Azul */
+  color: #fff;                /* Cor do texto */
+  border: none;               /* Sem borda */
+  padding: 12px 24px;         /* Espaçamento interno do botão */
+  font-size: 16px;            /* Tamanho da fonte */
+  border-radius: 5px;         /* Bordas arredondadas do botão */
+  cursor: pointer;            /* Cursor de mão */
+  transition: background-color 0.3s, transform 0.2s; /* Animação suave */
+}
+
+.add-btn:hover {
+  background-color: #45a049;  /* Darker green on hover */
+}
+
+.add-container {
+  margin: 20px 0;
+  text-align: center;
+}
+
+/* ===== Imagem do Profissional ===== */
+.service-card img {
+  width: 100px;              /* tamanho reduzido */
+  height: 100px;             /* mantém proporção */
+  object-fit: cover;         /* evita distorção da imagem */
+  border-radius: 50%;        /* deixa redonda */
+  display: block;
+  margin: 0 auto 10px auto;  /* centraliza e dá espaçamento inferior */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15); /* leve sombra */
+  transition: transform 0.3s ease;
+}
+
+.service-card img:hover {
+  transform: scale(1.05); /* pequeno zoom ao passar o mouse */
+}
+
+/* ===== Cards de Profissionais ===== */
+.service-card {
+  background: #fff;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.service-card:hover {
+  transform: translateY(-5px);
+}
+
+/* ===== Botões ===== */
+.button-group button {
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  cursor: pointer;
+  margin: 4px;
+  font-weight: bold;
+}
+
+.edit-btn {
+  background-color: #3498db;
+  color: white;
+}
+
+.delete-btn {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.edit-btn:hover {
+  background-color: #2980b9;
+}
+
+.delete-btn:hover {
+  background-color: #c0392b;
+}

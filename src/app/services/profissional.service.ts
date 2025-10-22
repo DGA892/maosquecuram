@@ -20,28 +20,24 @@ export class ProfissionalService {
 
   constructor(private http: HttpClient) {}
 
-  /** Obtém todos os profissionais */
-  getProfissionais(): Observable<Professional[]> {
+    getProfissionais(): Observable<Professional[]> {
     return this.http.get<Professional[]>(this.apiUrl);
   }
 
-  /** Obtém um profissional pelo ID */
   getProfissionalById(id: number): Observable<Professional> {
     return this.http.get<Professional>(`${this.apiUrl}/${id}`);
   }
 
-  /** Cria um novo profissional */
   addProfissional(profissional: Professional): Observable<Professional> {
     return this.http.post<Professional>(this.apiUrl, profissional);
   }
 
-  /** Atualiza um profissional existente */
   updateProfissional(id: number, profissional: Professional): Observable<Professional> {
     return this.http.put<Professional>(`${this.apiUrl}/${id}`, profissional);
   }
 
-  /** Exclui um profissional pelo ID */
   deleteProfissional(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
+
 }
