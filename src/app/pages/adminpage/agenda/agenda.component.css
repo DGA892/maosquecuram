@@ -277,3 +277,12 @@ header {
   background-color: #e74c3c; /* vermelho */
   color: #fff;
 }
+
+.day-block.has-agendamento {
+  background-color: #28a745; /* verde */
+  color: white;
+  border: 1px solid #1e7e34;
+}
+.day-block.has-agendamento:hover {
+  background-color: #218838;
+}

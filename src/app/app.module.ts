@@ -1,15 +1,17 @@
-import { NgModule } from '@angular/core';
+import { NgModule, LOCALE_ID } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, registerLocaleData } from '@angular/common';
+import localePt from '@angular/common/locales/pt';
 
 import { AppRoutingModule } from './app-routing.module';
 
 // Components
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './layout/header/header.component';
+import { HomeComponent } from './pages/home/home.component';
 
 // Modules
 import { AgendaModule } from './pages/adminpage/agenda/agenda.module';
@@ -22,26 +24,19 @@ import { ProfileModule } from './pages/perfil/profile/profile.module';
 import { AppointmentsModule } from './pages/perfil/appointments/appointments.module';
 import { FooterModule } from './shared/footer/footer.module';
 import { SharedModule } from './shared/shared.module';
-import { HomeComponent } from './pages/home/home.component';
 import { AgendamentoModule } from './pages/agendamento/agendamento.module';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
+
+// Interceptor
 import { AuthInterceptor } from './services/auth.interceptor';
 
+// ✅ Registro do locale PT-BR
+registerLocaleData(localePt, 'pt');
 
 @NgModule({
-
-  providers: [
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthInterceptor,
-      multi: true,
-    },
-  ],
   declarations: [
     AppComponent,
     HeaderComponent,
     HomeComponent,
-    
   ],
   imports: [
     BrowserModule,
@@ -60,7 +55,17 @@ import { AuthInterceptor } from './services/auth.interceptor';
     AppointmentsModule,
     FooterModule,
     AgendamentoModule,
-    AppRoutingModule // ← importa por último, contém todas as rotas
+    AppRoutingModule // ← mantém por último
+  ],
+  providers: [
+    // ✅ Configura o idioma global da aplicação
+    { provide: LOCALE_ID, useValue: 'pt' },
+    // ✅ Interceptor de autenticação
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },
   ],
   bootstrap: [AppComponent]
 })

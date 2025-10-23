@@ -43,11 +43,10 @@ export class AgendamentoService {
 
   /** 🗓️ Criar novo agendamento */
   criarAgendamento(agendamento: Agendamento): Observable<any> {
-    // Backend espera formato LocalDate/LocalTime — garantir formato adequado
     const payload = {
       ...agendamento,
       data: agendamento.data,
-      hora: agendamento.hora.length === 5 ? `${agendamento.hora}:00` : agendamento.hora // garante HH:mm:ss
+      hora: agendamento.hora.length === 5 ? `${agendamento.hora}:00` : agendamento.hora
     };
 
     return this.http.post(`${this.apiUrl}/cadastrar`, payload).pipe(
@@ -80,6 +79,26 @@ export class AgendamentoService {
       catchError(err => {
         console.error(`Erro ao deletar agendamento com ID ${id}:`, err);
         return throwError(() => new Error('Falha ao deletar agendamento.'));
+      })
+    );
+  }
+
+  /** 📅 Buscar dias com agendamentos em um mês específico */
+  getDiasComAgendamentos(year: number, month: number): Observable<number[]> {
+    return this.http.get<number[]>(`${this.apiUrl}/month/${year}/${month}`).pipe(
+      catchError(err => {
+        console.error('Erro ao buscar dias com agendamentos:', err);
+        return throwError(() => new Error('Falha ao buscar agendamentos do mês.'));
+      })
+    );
+  }
+
+  /** 📅 Buscar agendamentos de um dia específico */
+  getAgendamentosDoDia(date: string): Observable<{ [hour: string]: Agendamento }> {
+    return this.http.get<{ [hour: string]: Agendamento }>(`${this.apiUrl}/day/${date}`).pipe(
+      catchError(err => {
+        console.error('Erro ao buscar agendamentos do dia:', err);
+        return throwError(() => new Error('Falha ao buscar agendamentos do dia.'));
       })
     );
   }

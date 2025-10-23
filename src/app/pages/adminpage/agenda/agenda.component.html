@@ -1,86 +1,83 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<header>
+  <h1>Gerenciar Agenda</h1>
+</header>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Massoterapia</title>
-</head>
+<div class="container">
+  <app-sidebar></app-sidebar>
 
-<body>
-  <header>
-    <h1>Gerenciar Agenda</h1>
-  </header>
-  <div class="container">
+  <main class="content">
+    <h2>Agenda do Mês</h2>
 
-    <app-sidebar></app-sidebar>
+    <div class="calendar-controls">
+      <button (click)="prevMonth()">&#8592; Mês Anterior</button>
+      <span>{{ currentDate | date: 'MMMM yyyy' }}</span>
+      <button (click)="nextMonth()">Próximo Mês &#8594;</button>
+      <button (click)="toggleHolidayMode()">
+        Modo Feriado: {{ holidayMode ? 'ATIVO' : 'DESATIVADO' }}
+      </button>
+    </div>
 
-    <main class="content">
-      <h2>Agenda do Mês</h2>
-      <div class="calendar-controls">
-        <button (click)="prevMonth()">&#8592; Mês Anterior</button>
-        <span>{{ currentDate | date:'MMMM yyyy' }}</span>
-        <button (click)="nextMonth()">Próximo Mês &#8594;</button>
-        <button (click)="toggleHolidayMode()">
-          Modo Feriado: {{ holidayMode ? 'ATIVO' : 'DESATIVADO' }}
-        </button>
+    <div class="monthly-calendar">
+      <div *ngFor="let day of daysInMonth" class="day-block" [ngClass]="{
+          'holiday': isHoliday(day),
+          'has-agendamento': hasAgendamento(day)
+        }" (click)="holidayMode ? markHoliday(day) : selectDay(day)">
+        {{ day }} ({{ getWeekday(day) }})
       </div>
+    </div>
 
-      <div class="monthly-calendar">
-        <div *ngFor="let day of daysInMonth"
-       class="day-block"
-       [ngClass]="{'holiday': isHoliday(day)}"
-       (click)="holidayMode ? markHoliday(day) : selectDay(day)">
-    {{ day }} ({{ getWeekday(day) }})
-  </div>
-      </div>
+    <div class="calendar" *ngIf="selectedDate">
+      <h3>{{ selectedDate | date: 'fullDate' }}</h3>
 
-      <div class="calendar" *ngIf="selectedDate">
-        <h3>{{ selectedDate | date:'fullDate' }}</h3>
-        <div class="hours">
-          <div *ngFor="let slot of daySchedule" class="slot" [class.filled]="slot.agendamento"
-            (click)="markSlot(slot.hour)">
-            {{ slot.hour }}
-            <div *ngIf="slot.agendamento" class="client-card">
-              <strong>Cliente:</strong> {{ slot.agendamento.nome }}<br>
-              <strong>Email:</strong> {{ slot.agendamento.email }}<br>
-              <strong>Profissional:</strong> {{ slot.agendamento.profissional }}
-            </div>
+      <div class="hours">
+        <div *ngFor="let slot of daySchedule" class="slot" [class.filled]="slot.agendamento"
+          (click)="openModal(slot.hour)">
+          {{ slot.hour }}
+
+          <div *ngIf="slot.agendamento" class="client-card">
+            <strong>Cliente:</strong> {{ slot.agendamento.user }}<br />
+            <strong>Serviço:</strong> {{ slot.agendamento.servico }}<br />
+            <strong>Profissional:</strong> {{ slot.agendamento.profissional }}
           </div>
+
         </div>
       </div>
+    </div>
 
-      <!-- Modal de Agendamento -->
-      <div class="modal" *ngIf="showModal">
-        <div class="modal-content">
-          <span class="close" (click)="closeModal()">&times;</span>
-          <h3>Agendar Horário: {{ selectedHour }} - {{ selectedDate | date:'fullDate' }}</h3>
+    <!-- Modal de Agendamento -->
+    <div class="modal" *ngIf="showModal">
+      <div class="modal-content">
+        <span class="close" (click)="closeModal()">&times;</span>
+        <h3>
+          Agendar Horário: {{ selectedHour }} -
+          {{ selectedDate | date: 'fullDate' }}
+        </h3>
 
-          <div class="input-group">
-            <label>Serviço:</label>
-            <select [(ngModel)]="servicoSelecionado">
-              <option *ngFor="let s of servicos" [value]="s">{{ s }}</option>
-            </select>
-          </div>
-
-          <div class="input-group">
-            <label>Cliente:</label>
-            <select [(ngModel)]="clienteSelecionado">
-              <option *ngFor="let c of clientes" [value]="c">{{ c }}</option>
-            </select>
-          </div>
-
-          <div class="input-group">
-            <label>Profissional:</label>
-            <select [(ngModel)]="profissionalSelecionado">
-              <option *ngFor="let p of profissionais" [value]="p">{{ p }}</option>
-            </select>
-          </div>
-
-          <button (click)="confirmSchedule()">Confirmar</button>
+        <div class="input-group">
+          <label>Serviço:</label>
+          <select [(ngModel)]="servicoSelecionado">
+            <option *ngFor="let s of servicos" [value]="s">{{ s }}</option>
+          </select>
         </div>
+
+        <div class="input-group">
+          <label>Cliente:</label>
+          <select [(ngModel)]="clienteSelecionado">
+            <option *ngFor="let c of clientes" [value]="c">{{ c }}</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label>Profissional:</label>
+          <select [(ngModel)]="profissionalSelecionado">
+            <option *ngFor="let p of profissionais" [value]="p">
+              {{ p }}
+            </option>
+          </select>
+        </div>
+
+        <button class="confirm-btn" (click)="confirmSchedule()">Confirmar</button>
       </div>
-      
-    </main>
-  </div>
-</body>
+    </div>
+  </main>
+</div>

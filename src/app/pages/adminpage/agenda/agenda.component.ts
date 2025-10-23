@@ -1,11 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-
-interface Agendamento {
-  nome: string;
-  email: string;
-  profissional: string;
-}
+import { AgendamentoService, Agendamento } from '../../../services/agendamento.service';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-agenda',
@@ -23,7 +18,6 @@ export class AgendaComponent implements OnInit {
   feriados: Set<string> = new Set();
   holidayMode: boolean = false;
 
-  // Modal
   showModal: boolean = false;
   selectedHour: string | null = null;
   clientes: string[] = [];
@@ -34,11 +28,13 @@ export class AgendaComponent implements OnInit {
   profissionalSelecionado: string = '';
   servicoSelecionado: string = '';
 
-  constructor(private http: HttpClient) {}
+  constructor(private agendamentoService: AgendamentoService) {}
 
   ngOnInit() {
     this.generateDays();
     this.markSundaysAsHolidays();
+    this.loadClientes();
+    this.loadProfissionais();
   }
 
   generateDays() {
@@ -51,10 +47,7 @@ export class AgendaComponent implements OnInit {
   }
 
   formatDate(date: Date): string {
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-    return `${year}-${month}-${day}`; // formato ISO para fácil comparação
+    return formatDate(date, 'yyyy-MM-dd', 'pt');
   }
 
   getWeekday(day: number): string {
@@ -66,23 +59,25 @@ export class AgendaComponent implements OnInit {
     const year = this.currentDate.getFullYear();
     const month = this.currentDate.getMonth();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
-
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(year, month, day);
-      if (date.getDay() === 0) { // domingo
-        this.feriados.add(this.formatDate(date));
-      }
+      if (date.getDay() === 0) this.feriados.add(this.formatDate(date));
     }
   }
 
+  isHoliday(day: number): boolean {
+    const date = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), day);
+    return this.feriados.has(this.formatDate(date));
+  }
+
   prevMonth() {
-    this.currentDate.setMonth(this.currentDate.getMonth() - 1);
+    this.currentDate = new Date(this.currentDate.setMonth(this.currentDate.getMonth() - 1));
     this.generateDays();
     this.markSundaysAsHolidays();
   }
 
   nextMonth() {
-    this.currentDate.setMonth(this.currentDate.getMonth() + 1);
+    this.currentDate = new Date(this.currentDate.setMonth(this.currentDate.getMonth() + 1));
     this.generateDays();
     this.markSundaysAsHolidays();
   }
@@ -91,13 +86,18 @@ export class AgendaComponent implements OnInit {
     this.holidayMode = !this.holidayMode;
   }
 
+  markHoliday(day: number) {
+    const dateKey = this.formatDate(new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), day));
+    if (this.feriados.has(dateKey)) this.feriados.delete(dateKey);
+    else this.feriados.add(dateKey);
+  }
+
   selectDay(day: number) {
     const date = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), day);
     const dateKey = this.formatDate(date);
 
     if (this.holidayMode) {
-      if (this.feriados.has(dateKey)) this.feriados.delete(dateKey);
-      else this.feriados.add(dateKey);
+      this.markHoliday(day);
       return;
     }
 
@@ -111,75 +111,31 @@ export class AgendaComponent implements OnInit {
   }
 
   loadDaySchedule(dateKey: string) {
-    this.http.get<{ [hour: string]: Agendamento }>(`/agendamentos/day/${dateKey}`)
-      .subscribe(res => {
+    this.agendamentoService.getAgendamentosDoDia(dateKey).subscribe({
+      next: res => {
         this.daySchedule = this.hours.map(hour => ({
           hour,
           agendamento: res[hour]
         }));
-      }, err => {
+      },
+      error: err => {
         console.error('Erro ao carregar agendamentos', err);
         this.daySchedule = this.hours.map(hour => ({ hour }));
-      });
+      }
+    });
   }
 
-  markHoliday(day: number) {
-    const dateKey = this.formatDate( new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), day));
-    if (this.feriados.has(dateKey)) {
-      this.feriados.delete(dateKey);
-    } else {
-      this.feriados.add(dateKey);
-    }
-  }
-
-
-  markSlot(hour: string) {
-    if (!this.selectedDate) return;
-    const dateKey = this.formatDate(this.selectedDate);
-
-    const slot = this.daySchedule.find(s => s.hour === hour);
-    if (!slot) return;
-
-    if (slot.agendamento) {
-      alert("Horário já ocupado!");
-      return;
-    }
-
-    const novoAgendamento = {
-      servico: this.servicoSelecionado,
-      profissional: this.profissionalSelecionado,
-      user: this.clienteSelecionado,
-      data: dateKey,
-      hora: hour
-    };
-
-    this.http.post('/agendamentos/cadastrar', novoAgendamento)
-      .subscribe(() => {
-        alert('Agendamento criado com sucesso!');
-        this.loadDaySchedule(dateKey);
-      }, err => {
-        console.error('Erro ao criar agendamento', err);
-        alert('Erro ao criar agendamento.');
-      });
-  }
-
-  // Modal
   openModal(hour: string) {
     if (!this.selectedDate) return;
     const slot = this.daySchedule.find(s => s.hour === hour);
-    if (!slot || slot.agendamento) {
+
+    if (slot?.agendamento) {
       alert("Horário já ocupado!");
       return;
     }
 
     this.selectedHour = hour;
     this.showModal = true;
-
-    this.clientes = ['Cliente 1', 'Cliente 2', 'Cliente 3'];
-    this.profissionais = ['Ana', 'João', 'Maria'];
-    this.servicoSelecionado = this.servicos[0];
-    this.clienteSelecionado = this.clientes[0];
-    this.profissionalSelecionado = this.profissionais[0];
   }
 
   closeModal() {
@@ -191,27 +147,40 @@ export class AgendaComponent implements OnInit {
     if (!this.selectedDate || !this.selectedHour) return;
     const dateKey = this.formatDate(this.selectedDate);
 
-    const novoAgendamento = {
+    const novoAgendamento: Agendamento = {
       servico: this.servicoSelecionado,
       profissional: this.profissionalSelecionado,
       user: this.clienteSelecionado,
       data: dateKey,
-      hora: this.selectedHour
+      hora: this.selectedHour.length === 5 ? `${this.selectedHour}:00` : this.selectedHour
     };
 
-    this.http.post('/agendamentos/cadastrar', novoAgendamento)
-      .subscribe(() => {
+    this.agendamentoService.criarAgendamento(novoAgendamento).subscribe({
+      next: () => {
         alert('Agendamento criado com sucesso!');
         this.loadDaySchedule(dateKey);
         this.closeModal();
-      }, err => {
+      },
+      error: err => {
         console.error(err);
         alert('Erro ao criar agendamento.');
-      });
+      }
+    });
   }
 
-  isHoliday(day: number): boolean {
+  loadClientes() {
+    this.clientes = ['Cliente 1', 'Cliente 2', 'Cliente 3'];
+    this.clienteSelecionado = this.clientes[0];
+  }
+
+  loadProfissionais() {
+    this.profissionais = ['Ana', 'João', 'Maria'];
+    this.profissionalSelecionado = this.profissionais[0];
+  }
+
+  hasAgendamento(day: number): boolean {
     const date = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), day);
-    return this.feriados.has(this.formatDate(date));
+    const dateKey = this.formatDate(date);
+    return this.daySchedule.some(slot => slot.agendamento && slot.agendamento.data === dateKey);
   }
 }
